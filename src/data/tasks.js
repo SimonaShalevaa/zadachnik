@@ -1,0 +1,149 @@
+export const TASKS = [
+  {
+    id: 1,
+    title: "Квадратно уравнение с цели корени",
+    subject: "math",
+    grade: 8,
+    status: "open",
+    solutions: 0,
+    comments: 0,
+    time: "преди 5 мин",
+    preview: ["x² − 5x + 6 = 0", "Намерете корените."],
+  },
+  {
+    id: 2,
+    title: "Хвърляне под ъгъл спрямо хоризонта",
+    subject: "phys",
+    grade: 9,
+    status: "solved",
+    solutions: 3,
+    comments: 3,
+    time: "преди 1 ч",
+    preview: ["v₀ = 20 m/s, α = 30°", "Колко далеч пада?"],
+  },
+  {
+    id: 3,
+    title: "Изгаряне на метан",
+    subject: "chem",
+    grade: 8,
+    status: "progress",
+    solutions: 1,
+    comments: 1,
+    time: "преди 3 ч",
+    preview: ["CH₄ + O₂ → ?", "Изравнете."],
+  },
+  {
+    id: 4,
+    title: "Питагорова теорема",
+    subject: "math",
+    grade: 7,
+    status: "solved",
+    solutions: 2,
+    comments: 5,
+    time: "вчера",
+    preview: ["△ABC: AB = 6, BC = 8,", "∠B = 90°. AC = ?"],
+  },
+  {
+    id: 5,
+    title: "Цикъл за четни числа",
+    subject: "it",
+    grade: 10,
+    status: "open",
+    solutions: 0,
+    comments: 0,
+    time: "вчера",
+    preview: ["for i in range(10):", "  print(?)"],
+  },
+  {
+    id: 6,
+    title: "Логаритмично уравнение",
+    subject: "math",
+    grade: 11,
+    status: "progress",
+    solutions: 2,
+    comments: 2,
+    time: "преди 2 дни",
+    preview: ["log₂(x + 1) = 3", "x = ?"],
+  },
+];
+
+export const MY_TASKS = [
+  {
+    id: 7,
+    title: "Основно тригонометрично тъждество",
+    subject: "math",
+    grade: 10,
+    status: "solved",
+    solutions: 2,
+    comments: 4,
+    preview: ["sin²x + cos²x = ?"],
+  },
+  {
+    id: 8,
+    title: "Втори закон на Нютон",
+    subject: "phys",
+    grade: 10,
+    status: "open",
+    solutions: 0,
+    comments: 0,
+    preview: ["F = m·a, m = 2 kg", "a = ?"],
+  },
+];
+
+export const TASK_DETAIL = {
+  id: 1,
+  title: "Квадратно уравнение с цели корени",
+  subject: "math",
+  grade: 8,
+  authorId: "ivan",
+  time: "преди 5 мин",
+  status: "progress",
+  solutions: 2,
+  extraTags: ["Уравнения"],
+  image: ["Задача 4.", "x² − 5x + 6 = 0", "Намерете корените и проверете."],
+  note: "Не разбирам как се ползва формулата с дискриминантата, може ли някой да обясни стъпка по стъпка?",
+};
+
+export const SOLUTIONS = [
+  {
+    id: 1,
+    authorId: "elena",
+    time: "преди 2 мин",
+    votes: 14,
+    best: true,
+    hint: "Потърси две числа, чийто сбор е 5, а произведението — 6.",
+    lines: ["D = b² − 4ac = 25 − 24 = 1", "x₁,₂ = (5 ± 1) / 2 ⇒ "],
+    result: "x₁ = 3, x₂ = 2",
+    paper: "D = 1 → x₁ = 3, x₂ = 2 ✓",
+    comments: 2,
+  },
+  {
+    id: 2,
+    authorId: "dimitar",
+    time: "преди 1 мин",
+    votes: 3,
+    best: false,
+    lines: ["Разлагаме: (x − 2)(x − 3) = 0, значи x = 2 или x = 3."],
+    comments: 0,
+  },
+];
+
+export const SIMILAR_TASKS = [
+  { id: 11, title: "x² + 2x − 8 = 0", grade: 8 },
+  { id: 12, title: "Формули на Виет", grade: 8 },
+  { id: 13, title: "Биквадратни уравнения", grade: 9 },
+];
+
+export const TASK_RULES = [
+  "Обяснявай, не само давай отговор.",
+  "Бъди учтив в коментарите.",
+  "Не качвай задачи от текущи контролни.",
+];
+
+export const SORT_OPTIONS = ["Най-нови", "Без решение", "Най-популярни"];
+
+export const SITE_STATS = [
+  { value: "1 248", label: "задачи" },
+  { value: "3 910", label: "решения" },
+  { value: "86%", label: "решени" },
+];
