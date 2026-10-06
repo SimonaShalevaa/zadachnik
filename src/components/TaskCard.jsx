@@ -1,25 +1,29 @@
 import Paper from "./Paper";
-import SubjectTag from "./SubjectTag";
-import StatusBadge from "./StatusBadge";
+import { subjects } from "../data/tasks";
 
 function TaskCard({ task }) {
+  let statusText = "Без решение";
+  if (task.status === "solved") {
+    statusText = "Решена";
+  } else if (task.status === "progress") {
+    statusText = task.solutions === 1 ? "1 решение" : task.solutions + " решения";
+  }
+
   return (
     <article className="card task-card">
       <a href="#task" className="task-card__img">
-        <Paper lines={task.preview} />
+        <Paper lines={task.text} />
       </a>
       <div className="task-card__body">
         <div className="tags">
-          <SubjectTag subject={task.subject} />
+          <span className={"tag tag--" + task.subject}>{subjects[task.subject]}</span>
           <span className="tag">{task.grade} клас</span>
         </div>
         <h3>
-          <a href="#task" title={task.title}>
-            {task.title}
-          </a>
+          <a href="#task">{task.title}</a>
         </h3>
         <div className="task-card__meta">
-          <StatusBadge status={task.status} solutions={task.solutions} />
+          <span className={"status status--" + task.status}>{statusText}</span>
           <span>💬 {task.comments}</span>
           {task.time && <span>{task.time}</span>}
         </div>

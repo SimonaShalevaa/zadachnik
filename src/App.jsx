@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import HomePage from "./pages/HomePage";
@@ -10,12 +11,23 @@ import ArticlePage from "./pages/ArticlePage";
 import HowItWorksPage from "./pages/HowItWorksPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import UiStatesPage from "./pages/UiStatesPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import useHashNavigation from "./hooks/useHashNavigation";
 
 function App() {
-  useHashNavigation();
+  useEffect(() => {
+    function checkHash() {
+      document.getElementById("nav-toggle").checked = false;
+
+      const id = window.location.hash.slice(1);
+      if (id && !document.getElementById(id)) {
+        window.location.hash = "not-found";
+      }
+    }
+
+    checkHash();
+    window.addEventListener("hashchange", checkHash);
+    return () => window.removeEventListener("hashchange", checkHash);
+  }, []);
 
   return (
     <div>
@@ -31,7 +43,6 @@ function App() {
         <HowItWorksPage />
         <LoginPage />
         <RegisterPage />
-        <UiStatesPage />
         <NotFoundPage />
       </main>
       <Footer />

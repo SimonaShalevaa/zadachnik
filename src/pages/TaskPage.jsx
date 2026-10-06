@@ -1,28 +1,13 @@
-import { useCallback, useEffect, useState } from "react";
-import Avatar from "../components/Avatar";
+import { useState } from "react";
 import Paper from "../components/Paper";
-import SubjectTag from "../components/SubjectTag";
-import StatusBadge from "../components/StatusBadge";
+import Lightbox from "../components/Lightbox";
 import SolutionCard from "../components/SolutionCard";
 import SolutionForm from "../components/SolutionForm";
-import SideBox from "../components/SideBox";
-import SideTaskList from "../components/SideTaskList";
-import RulesList from "../components/RulesList";
-import Lightbox from "../components/Lightbox";
-import { TASK_DETAIL, SOLUTIONS, SIMILAR_TASKS, TASK_RULES } from "../data/tasks";
-import { getUser } from "../data/users";
+import { taskDetails, solutions, similarTasks, subjects } from "../data/tasks";
 
 function TaskPage() {
-  const task = TASK_DETAIL;
-  const author = getUser(task.authorId);
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const openLightbox = () => setLightboxOpen(true);
-  const closeLightbox = useCallback(() => setLightboxOpen(false), []);
-
-  useEffect(() => {
-    window.addEventListener("hashchange", closeLightbox);
-    return () => window.removeEventListener("hashchange", closeLightbox);
-  }, [closeLightbox]);
+  const [showImage, setShowImage] = useState(false);
+  const task = taskDetails;
 
   return (
     <section id="task" className="view">
@@ -34,36 +19,29 @@ function TaskPage() {
           <article className="card task-detail">
             <div className="task-detail__head">
               <div className="author">
-                <Avatar user={author} />
+                <span className="avatar avatar--sm">{task.author.initials}</span>
                 <div>
-                  <strong>{author.name}</strong>
+                  <strong>{task.author.name}</strong>
                   <small>
                     {task.grade} клас · {task.time}
                   </small>
                 </div>
               </div>
-              <StatusBadge status={task.status} solutions={task.solutions} />
+              <span className="status status--progress">{task.solutions} решения</span>
             </div>
             <h1>{task.title}</h1>
             <div className="tags">
-              <SubjectTag subject={task.subject} />
+              <span className={"tag tag--" + task.subject}>{subjects[task.subject]}</span>
               <span className="tag">{task.grade} клас</span>
-              {task.extraTags.map((tag) => (
-                <span key={tag} className="tag">
+              {task.tags.map((tag) => (
+                <span className="tag" key={tag}>
                   {tag}
                 </span>
               ))}
             </div>
-            <div
-              className="task-detail__img"
-              role="button"
-              tabIndex={0}
-              aria-label="Отвори снимката на цял екран"
-              onClick={openLightbox}
-              onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && openLightbox()}
-            >
+            <div className="task-detail__img" onClick={() => setShowImage(true)}>
               <span className="task-detail__zoom">🔍 Увеличи</span>
-              <Paper lines={task.image} size="lg" />
+              <Paper lines={task.text} className="paper--lg" />
             </div>
             <p className="task-detail__note">{task.note}</p>
             <div className="task-detail__actions">
@@ -72,24 +50,40 @@ function TaskPage() {
               <button className="btn btn--ghost btn--danger">⚑ Докладвай</button>
             </div>
           </article>
+
           <h2 className="section-title">
-            Решения <span>({SOLUTIONS.length})</span>
+            Решения <span>({solutions.length})</span>
           </h2>
-          {SOLUTIONS.map((solution) => (
+          {solutions.map((solution) => (
             <SolutionCard key={solution.id} solution={solution} />
           ))}
           <SolutionForm />
         </div>
+
         <aside className="sidebar">
-          <SideBox title="Подобни задачи">
-            <SideTaskList tasks={SIMILAR_TASKS} />
-          </SideBox>
-          <SideBox title="Правила">
-            <RulesList rules={TASK_RULES} />
-          </SideBox>
+          <div className="card side-box">
+            <h3>Подобни задачи</h3>
+            <ul className="side-list">
+              {similarTasks.map((item) => (
+                <li key={item.id}>
+                  <a href="#task">{item.title}</a>
+                  <span className="tag">{item.grade} кл.</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="card side-box">
+            <h3>Правила</h3>
+            <ul className="rules">
+              <li>Обяснявай, не само давай отговор.</li>
+              <li>Бъди учтив в коментарите.</li>
+              <li>Не качвай задачи от текущи контролни.</li>
+            </ul>
+          </div>
         </aside>
       </div>
-      {lightboxOpen && <Lightbox title={task.title} lines={task.image} onClose={closeLightbox} />}
+
+      {showImage && <Lightbox title={task.title} lines={task.text} onClose={() => setShowImage(false)} />}
     </section>
   );
 }

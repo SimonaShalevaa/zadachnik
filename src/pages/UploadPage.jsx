@@ -1,4 +1,4 @@
-import { SUBJECTS, GRADES } from "../data/subjects";
+import { subjects, grades } from "../data/tasks";
 
 function UploadPage() {
   return (
@@ -14,38 +14,38 @@ function UploadPage() {
             <small>JPG, PNG до 10 MB</small>
           </label>
           <div className="field">
-            <label htmlFor="upload-title">Заглавие</label>
-            <input id="upload-title" type="text" placeholder="напр. Квадратно уравнение с параметър" />
+            <label htmlFor="title">Заглавие</label>
+            <input id="title" type="text" placeholder="напр. Квадратно уравнение с параметър" />
           </div>
           <div className="field-row">
             <div className="field">
-              <label htmlFor="upload-subject">Предмет</label>
-              <select id="upload-subject">
-                {SUBJECTS.map((subject) => (
-                  <option key={subject.id} value={subject.id}>
-                    {subject.label}
+              <label htmlFor="subject">Предмет</label>
+              <select id="subject">
+                {Object.entries(subjects).map(([key, name]) => (
+                  <option key={key} value={key}>
+                    {name}
                   </option>
                 ))}
               </select>
             </div>
             <div className="field">
-              <label htmlFor="upload-grade">Клас</label>
-              <select id="upload-grade" defaultValue="8">
-                {GRADES.map((grade) => (
+              <label htmlFor="grade">Клас</label>
+              <select id="grade" defaultValue="8">
+                {grades.map((grade) => (
                   <option key={grade}>{grade}</option>
                 ))}
               </select>
             </div>
           </div>
           <div className="field">
-            <label htmlFor="upload-note">
+            <label htmlFor="note">
               Какво точно не ти е ясно? <small>(по желание)</small>
             </label>
-            <textarea id="upload-note" rows={3} placeholder="Помага на останалите да ти обяснят по-добре" />
+            <textarea id="note" rows={3} placeholder="Помага на останалите да ти обяснят по-добре" />
           </div>
           <div className="field">
-            <label htmlFor="upload-tags">Етикети</label>
-            <input id="upload-tags" type="text" placeholder="уравнения, дискриминанта" />
+            <label htmlFor="tags">Етикети</label>
+            <input id="tags" type="text" placeholder="уравнения, дискриминанта" />
           </div>
           <div className="form-actions">
             <a href="#home" className="btn btn--ghost">

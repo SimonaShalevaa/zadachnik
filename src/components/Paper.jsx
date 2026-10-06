@@ -1,14 +1,10 @@
-import { Fragment } from "react";
-
-function Paper({ lines, size, className = "", style }) {
-  const classes = ["paper", size && `paper--${size}`, className].filter(Boolean).join(" ");
+function Paper({ lines, className }) {
   return (
-    <div className={classes} style={style}>
-      {lines.map((line, i) => (
-        <Fragment key={i}>
-          {i > 0 && <br />}
+    <div className={"paper " + (className || "")}>
+      {lines.map((line, index) => (
+        <p key={index} className="paper__line">
           {line}
-        </Fragment>
+        </p>
       ))}
     </div>
   );

@@ -1,28 +1,9 @@
 import BlogCard from "../components/BlogCard";
-import BlogFeatured from "../components/BlogFeatured";
-import Chips from "../components/Chips";
-import { POSTS, BLOG_CATEGORIES } from "../data/posts";
-
-function Newsletter() {
-  return (
-    <div className="card newsletter">
-      <div>
-        <h3>📬 Нови статии всяка седмица</h3>
-        <p className="muted">Кратко, полезно и без спам. Отписваш се с един клик.</p>
-      </div>
-      <form className="newsletter__form" onSubmit={(e) => e.preventDefault()}>
-        <input type="email" placeholder="твоят имейл" />
-        <button type="submit" className="btn btn--primary">
-          Абонирай се
-        </button>
-      </form>
-    </div>
-  );
-}
+import { posts, categories } from "../data/posts";
 
 function BlogPage() {
-  const featured = POSTS.find((post) => post.featured);
-  const others = POSTS.filter((post) => !post.featured);
+  const featured = posts[0];
+  const otherPosts = posts.slice(1);
 
   return (
     <section id="blog" className="view">
@@ -30,17 +11,54 @@ function BlogPage() {
         <h1>Блог</h1>
         <p className="muted">Обяснения, трикове и съвети за учене – написани от ученици и учители.</p>
       </div>
-      <BlogFeatured post={featured} symbol="∑" />
-      <Chips items={BLOG_CATEGORIES} active="Всички" className="blog-chips" />
-      <div className="blog-grid">
-        {others.map((post) => (
-          <BlogCard key={post.slug} post={post} />
+
+      <article className="card blog-featured">
+        <a href="#article" className={"blog-featured__cover blog-card__cover--" + featured.cover}>
+          <span>∑</span>
+        </a>
+        <div className="blog-featured__body">
+          <span className="badge-featured">★ Избрана статия</span>
+          <span className="blog-card__cat">{featured.category}</span>
+          <h2>
+            <a href="#article">{featured.title}</a>
+          </h2>
+          <p className="muted">{featured.excerpt}</p>
+          <div className="author">
+            <span className="avatar avatar--sm avatar--alt">ЕК</span>
+            <div>
+              <strong>{featured.author}</strong>
+              <small>12 септ. 2026 · {featured.readTime} мин четене</small>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <div className="chips blog-chips">
+        {categories.map((category, index) => (
+          <button className={index === 0 ? "chip chip--active" : "chip"} key={category}>
+            {category}
+          </button>
         ))}
       </div>
-      <div className="pagination">
-        <button className="btn btn--ghost">Още статии</button>
+
+      <div className="blog-grid">
+        {otherPosts.map((post) => (
+          <BlogCard key={post.id} post={post} />
+        ))}
       </div>
-      <Newsletter />
+
+      <div className="card newsletter">
+        <div>
+          <h3>📬 Нови статии всяка седмица</h3>
+          <p className="muted">Кратко, полезно и без спам. Отписваш се с един клик.</p>
+        </div>
+        <form className="newsletter__form">
+          <input type="email" placeholder="твоят имейл" />
+          <button type="button" className="btn btn--primary">
+            Абонирай се
+          </button>
+        </form>
+      </div>
     </section>
   );
 }

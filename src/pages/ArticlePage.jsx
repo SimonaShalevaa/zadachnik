@@ -1,27 +1,10 @@
-import Avatar from "../components/Avatar";
 import Paper from "../components/Paper";
-import Callout from "../components/Callout";
-import SideBox from "../components/SideBox";
-import SideTaskList from "../components/SideTaskList";
-import { ARTICLE_SECTIONS, getPost } from "../data/posts";
-import { SIMILAR_TASKS } from "../data/tasks";
-import { getUser } from "../data/users";
-import { formatPoints } from "../utils/format";
-
-const ARTICLE_TAGS = ["уравнения", "дискриминанта", "НВО"];
-const RELATED_SLUGS = ["greshki-nvo", "zakoni-na-nyuton", "python-zadachi"];
-
-function scrollToSection(e) {
-  e.preventDefault();
-  const id = e.currentTarget.getAttribute("href").slice(1);
-  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-}
 
 function ArticlePage() {
-  const post = getPost("kvadratni-uravnenia");
-  const author = getUser(post.authorId);
-  const related = RELATED_SLUGS.map(getPost);
-  const [what, discriminant, example, practice] = ARTICLE_SECTIONS;
+  function scrollTo(e, id) {
+    e.preventDefault();
+    document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+  }
 
   return (
     <section id="article" className="view">
@@ -30,20 +13,18 @@ function ArticlePage() {
       </a>
       <div className="article-layout">
         <article className="card article">
-          <div className={`article__cover blog-card__cover--${post.cover}`}>
-            <span>{post.symbol}</span>
+          <div className="article__cover blog-card__cover--math">
+            <span>x²</span>
           </div>
           <div className="article__content">
-            <span className="blog-card__cat">{post.category} · 8 клас</span>
-            <h1>{post.title}</h1>
+            <span className="blog-card__cat">Математика · 8 клас</span>
+            <h1>Квадратни уравнения за 3 минути: пълно ръководство</h1>
             <div className="article__meta">
               <div className="author">
-                <Avatar user={author} />
+                <span className="avatar avatar--sm avatar--alt">ЕК</span>
                 <div>
-                  <strong>{author.name}</strong>
-                  <small>
-                    {post.date} · {post.readTime} мин четене
-                  </small>
+                  <strong>Елена К.</strong>
+                  <small>12 септ. 2026 · 6 мин четене</small>
                 </div>
               </div>
               <div className="article__share">
@@ -51,18 +32,21 @@ function ArticlePage() {
                 <button className="btn btn--ghost">↗ Сподели</button>
               </div>
             </div>
+
             <p className="article__lead">
-              Квадратното уравнение изглежда страшно само докато не видиш, че винаги се решава по един
-              и същи начин. Ето го.
+              Квадратното уравнение изглежда страшно само докато не видиш, че винаги се решава по един и
+              същи начин. Ето го.
             </p>
-            <h2 id={what.id}>{what.title}</h2>
+
+            <h2 id="what">Какво е квадратно уравнение</h2>
             <p>
               Уравнение от вида <code>ax² + bx + c = 0</code>, където a ≠ 0. Числата a, b и c се
               наричат коефициенти.
             </p>
-            <h2 id={discriminant.id}>{discriminant.title}</h2>
+
+            <h2 id="discriminant">Дискриминанта</h2>
             <p>Първо пресмятаме дискриминантата – тя казва колко корена има уравнението:</p>
-            <Paper lines={["D = b² − 4ac"]} size="sm" className="article__formula" />
+            <Paper lines={["D = b² − 4ac"]} className="paper--sm article__formula" />
             <ul>
               <li>
                 <strong>D &gt; 0</strong> – два различни корена
@@ -74,25 +58,38 @@ function ArticlePage() {
                 <strong>D &lt; 0</strong> – няма реални корени
               </li>
             </ul>
-            <Callout type="tip" title="💡 Трик">
-              Ако a = 1, потърси две числа със сбор −b и произведение c. За x² − 5x + 6 = 0 това са 2
-              и 3.
-            </Callout>
-            <h2 id={example.id}>{example.title}</h2>
+            <div className="callout callout--tip">
+              <strong>💡 Трик</strong>
+              <p>
+                Ако a = 1, потърси две числа със сбор −b и произведение c. За x² − 5x + 6 = 0 това са 2
+                и 3.
+              </p>
+            </div>
+
+            <h2 id="example">Решен пример</h2>
             <p>Да решим x² − 5x + 6 = 0:</p>
-            <Paper lines={["D = 25 − 24 = 1 → x₁ = 3, x₂ = 2"]} size="sm" className="article__formula" />
-            <Callout type="warn" title="⚠ Честа грешка">
-              Забравен знак минус пред b във формулата за корените.
-            </Callout>
-            <h2 id={practice.id}>{practice.title}</h2>
+            <Paper lines={["D = 25 − 24 = 1 → x₁ = 3, x₂ = 2"]} className="paper--sm article__formula" />
+            <div className="callout callout--warn">
+              <strong>⚠ Честа грешка</strong>
+              <p>Забравен знак минус пред b във формулата за корените.</p>
+            </div>
+
+            <h2 id="practice">Упражни се</h2>
             <p>Опитай тези задачи от Задачник и провери решенията на другите:</p>
-            <SideTaskList tasks={SIMILAR_TASKS.slice(0, 2)} className="article__practice" />
+            <ul className="side-list article__practice">
+              <li>
+                <a href="#task">x² + 2x − 8 = 0</a>
+                <span className="tag">8 кл.</span>
+              </li>
+              <li>
+                <a href="#task">Формули на Виет</a>
+                <span className="tag">8 кл.</span>
+              </li>
+            </ul>
             <div className="article__tags tags">
-              {ARTICLE_TAGS.map((tag) => (
-                <span key={tag} className="tag">
-                  {tag}
-                </span>
-              ))}
+              <span className="tag">уравнения</span>
+              <span className="tag">дискриминанта</span>
+              <span className="tag">НВО</span>
             </div>
             <div className="article__footer">
               <button className="btn btn--ghost">👍 Полезна (48)</button>
@@ -100,35 +97,39 @@ function ArticlePage() {
             </div>
           </div>
         </article>
+
         <aside className="sidebar">
-          <SideBox title="Съдържание">
+          <div className="card side-box">
+            <h3>Съдържание</h3>
             <ol className="toc">
-              {ARTICLE_SECTIONS.map((section) => (
-                <li key={section.id}>
-                  <a href={`#${section.id}`} onClick={scrollToSection}>
-                    {section.title}
-                  </a>
-                </li>
-              ))}
+              <li>
+                <a href="#what" onClick={(e) => scrollTo(e, "what")}>
+                  Какво е квадратно уравнение
+                </a>
+              </li>
+              <li>
+                <a href="#discriminant" onClick={(e) => scrollTo(e, "discriminant")}>
+                  Дискриминанта
+                </a>
+              </li>
+              <li>
+                <a href="#example" onClick={(e) => scrollTo(e, "example")}>
+                  Решен пример
+                </a>
+              </li>
+              <li>
+                <a href="#practice" onClick={(e) => scrollTo(e, "practice")}>
+                  Упражни се
+                </a>
+              </li>
             </ol>
-          </SideBox>
-          <SideBox className="author-box">
-            <Avatar user={author} size="lg" />
-            <strong>{author.name}</strong>
-            <small className="muted">
-              {author.grade} клас · ⭐ {formatPoints(author.points)} т.
-            </small>
-            <p className="muted">{author.bio}</p>
-          </SideBox>
-          <SideBox title="Още статии">
-            <ul className="side-list">
-              {related.map((p) => (
-                <li key={p.slug}>
-                  <a href="#article">{p.shortTitle ?? p.title}</a>
-                </li>
-              ))}
-            </ul>
-          </SideBox>
+          </div>
+          <div className="card side-box author-box">
+            <span className="avatar avatar--lg avatar--alt">ЕК</span>
+            <strong>Елена К.</strong>
+            <small className="muted">11 клас · ⭐ 1 240 т.</small>
+            <p className="muted">Обича алгебрата и да обяснява с примери.</p>
+          </div>
         </aside>
       </div>
     </section>

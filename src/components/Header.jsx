@@ -1,6 +1,5 @@
 import Notifications from "./Notifications";
-import { NAV_LINKS } from "../data/navigation";
-import { CURRENT_USER } from "../data/users";
+import { currentUser } from "../data/users";
 
 function Header() {
   return (
@@ -10,16 +9,17 @@ function Header() {
           <span className="logo__mark">∑</span>
           <span className="logo__text">Задачник</span>
         </a>
+
         <input type="checkbox" id="nav-toggle" className="nav-toggle" />
-        <label htmlFor="nav-toggle" className="nav-burger" aria-label="Меню">
+        <label htmlFor="nav-toggle" className="nav-burger">
           <span />
         </label>
+
         <nav className="nav">
-          {NAV_LINKS.map((link) => (
-            <a key={link.href} href={link.href} className="nav__link">
-              {link.label}
-            </a>
-          ))}
+          <a href="#home" className="nav__link">Задачи</a>
+          <a href="#leaderboard" className="nav__link">Класация</a>
+          <a href="#blog" className="nav__link">Блог</a>
+          <a href="#profile" className="nav__link">Моят профил</a>
           <div className="nav__search">
             <input type="search" placeholder="Търси задача…" />
           </div>
@@ -27,9 +27,10 @@ function Header() {
             + Качи задача
           </a>
         </nav>
+
         <Notifications />
-        <a href="#profile" className="avatar header__avatar" title={CURRENT_USER.name}>
-          {CURRENT_USER.initials}
+        <a href="#profile" className="avatar header__avatar">
+          {currentUser.initials}
         </a>
       </div>
     </header>

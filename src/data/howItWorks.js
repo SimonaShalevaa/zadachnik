@@ -1,4 +1,4 @@
-export const STEPS = [
+export const steps = [
   {
     icon: "📷",
     title: "Снимай и качи",
@@ -16,7 +16,7 @@ export const STEPS = [
   },
 ];
 
-export const POINT_RULES = [
+export const pointRules = [
   { action: "Публикувано решение", points: 10 },
   { action: "Решение с 5+ положителни гласа", points: 15 },
   { action: "Избрано за най-добро решение", points: 25 },
@@ -25,9 +25,9 @@ export const POINT_RULES = [
   { action: "Премахнато решение (нарушение)", points: -20 },
 ];
 
-export const BADGES = ["🏅 Математик", "🔬 Физик", "🔥 7 дни поред", "🤝 50 решения", "🎓 Наставник"];
+export const badges = ["🏅 Математик", "🔬 Физик", "🔥 7 дни поред", "🤝 50 решения", "🎓 Наставник"];
 
-export const SITE_RULES = [
+export const rules = [
   "Обяснявай стъпките, не давай само отговор.",
   "Бъди учтив – зад всеки профил стои ученик.",
   "Не качвай задачи от текущи контролни и изпити.",
@@ -36,7 +36,7 @@ export const SITE_RULES = [
   "Докладвай грешни или обидни решения с ⚑.",
 ];
 
-export const FAQ = [
+export const faq = [
   { q: "Безплатно ли е?", a: "Да. Задачник е изцяло безплатен и без реклами." },
   {
     q: "Какво става, ако решението е грешно?",

@@ -1,16 +1,9 @@
 import TaskCard from "../components/TaskCard";
 import BlogCard from "../components/BlogCard";
-import HeroStats from "../components/HeroStats";
-import SectionHead from "../components/SectionHead";
-import Chips from "../components/Chips";
-import { TASKS, SITE_STATS, SORT_OPTIONS } from "../data/tasks";
-import { SUBJECTS, GRADES } from "../data/subjects";
-import { HOME_POST_SLUGS, getPost } from "../data/posts";
+import { tasks, stats, subjects, grades } from "../data/tasks";
+import { posts } from "../data/posts";
 
 function HomePage() {
-  const subjectChips = ["Всички", ...SUBJECTS.map((s) => s.label)];
-  const homePosts = HOME_POST_SLUGS.map(getPost);
-
   return (
     <section id="home" className="view">
       <div className="hero">
@@ -24,36 +17,58 @@ function HomePage() {
             Как работи? →
           </a>
         </div>
-        <HeroStats stats={SITE_STATS} />
+        <div className="hero__stats">
+          {stats.map((stat) => (
+            <div className="stat" key={stat.label}>
+              <strong>{stat.value}</strong>
+              <span>{stat.label}</span>
+            </div>
+          ))}
+        </div>
       </div>
+
       <div className="filters">
-        <Chips items={subjectChips} active="Всички" />
+        <div className="chips">
+          <button className="chip chip--active">Всички</button>
+          {Object.values(subjects).map((name) => (
+            <button className="chip" key={name}>
+              {name}
+            </button>
+          ))}
+        </div>
         <div className="filters__selects">
           <select>
             <option>Всички класове</option>
-            {GRADES.map((grade) => (
+            {grades.map((grade) => (
               <option key={grade}>{grade} клас</option>
             ))}
           </select>
           <select>
-            {SORT_OPTIONS.map((option) => (
-              <option key={option}>{option}</option>
-            ))}
+            <option>Най-нови</option>
+            <option>Без решение</option>
+            <option>Най-популярни</option>
           </select>
         </div>
       </div>
+
       <div className="grid">
-        {TASKS.map((task) => (
+        {tasks.map((task) => (
           <TaskCard key={task.id} task={task} />
         ))}
       </div>
       <div className="pagination">
         <button className="btn btn--ghost">Зареди още</button>
       </div>
-      <SectionHead title="От блога" linkHref="#blog" linkLabel="Всички статии →" />
+
+      <div className="section-head">
+        <h2>От блога</h2>
+        <a href="#blog" className="section-head__link">
+          Всички статии →
+        </a>
+      </div>
       <div className="blog-grid">
-        {homePosts.map((post) => (
-          <BlogCard key={post.slug} post={post} />
+        {posts.slice(0, 3).map((post) => (
+          <BlogCard key={post.id} post={post} />
         ))}
       </div>
     </section>

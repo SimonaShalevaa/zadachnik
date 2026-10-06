@@ -1,9 +1,4 @@
-import RulesList from "../components/RulesList";
-import { STEPS, POINT_RULES, BADGES, SITE_RULES, FAQ } from "../data/howItWorks";
-
-function formatDelta(points) {
-  return points > 0 ? `+${points}` : `−${Math.abs(points)}`;
-}
+import { steps, pointRules, badges, rules, faq } from "../data/howItWorks";
 
 function HowItWorksPage() {
   return (
@@ -16,33 +11,37 @@ function HowItWorksPage() {
           безплатно и без реклами.
         </p>
       </div>
+
       <ol className="steps">
-        {STEPS.map((step, i) => (
-          <li key={step.title} className="card step">
-            <span className="step__num">{i + 1}</span>
+        {steps.map((step, index) => (
+          <li className="card step" key={step.title}>
+            <span className="step__num">{index + 1}</span>
             <span className="step__icon">{step.icon}</span>
             <h3>{step.title}</h3>
             <p className="muted">{step.text}</p>
           </li>
         ))}
       </ol>
+
       <div className="how-grid">
         <div className="card side-box">
           <h2>Точкова система</h2>
           <table className="points-table">
             <tbody>
-              {POINT_RULES.map((rule) => (
+              {pointRules.map((rule) => (
                 <tr key={rule.action}>
                   <td>{rule.action}</td>
-                  <td className={rule.points > 0 ? "plus" : "minus"}>{formatDelta(rule.points)}</td>
+                  <td className={rule.points > 0 ? "plus" : "minus"}>
+                    {rule.points > 0 ? "+" + rule.points : rule.points}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
           <h3 className="how-sub">Значки</h3>
           <div className="badges">
-            {BADGES.map((badge) => (
-              <span key={badge} className="badge">
+            {badges.map((badge) => (
+              <span className="badge" key={badge}>
                 {badge}
               </span>
             ))}
@@ -50,18 +49,24 @@ function HowItWorksPage() {
         </div>
         <div className="card side-box">
           <h2>Правила</h2>
-          <RulesList rules={SITE_RULES} />
+          <ul className="rules">
+            {rules.map((rule) => (
+              <li key={rule}>{rule}</li>
+            ))}
+          </ul>
         </div>
       </div>
+
       <h2 className="section-title faq-title">Често задавани въпроси</h2>
       <div className="faq">
-        {FAQ.map((item) => (
-          <details key={item.q} className="spoiler">
+        {faq.map((item) => (
+          <details className="spoiler" key={item.q}>
             <summary>{item.q}</summary>
             <p>{item.a}</p>
           </details>
         ))}
       </div>
+
       <div className="card cta">
         <div>
           <h2>Готов ли си да започнеш?</h2>

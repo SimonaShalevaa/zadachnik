@@ -1,4 +1,4 @@
-export const NOTIFICATIONS = [
+export const notifications = [
   {
     id: 1,
     icon: "✓",

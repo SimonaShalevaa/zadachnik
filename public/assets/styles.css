@@ -475,6 +475,9 @@ textarea {
   height: 100%;
   transform: rotate(-1.2deg) scale(1.04);
 }
+.paper__line {
+  margin: 0;
+}
 .paper--lg {
   font-size: 1.9rem;
   line-height: 44px;
