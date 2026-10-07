@@ -14,17 +14,22 @@ export const tasks = [
     title: "Квадратно уравнение с цели корени",
     subject: "math",
     grade: 8,
-    status: "open",
-    solutions: 0,
-    comments: 0,
+    authorId: 5,
+    status: "progress",
+    solutions: 2,
+    comments: 2,
     time: "преди 5 мин",
     text: ["x² − 5x + 6 = 0", "Намерете корените."],
+    fullText: ["Задача 4.", "x² − 5x + 6 = 0", "Намерете корените и проверете."],
+    tags: ["Уравнения"],
+    note: "Не разбирам как се ползва формулата с дискриминантата, може ли някой да обясни стъпка по стъпка?",
   },
   {
     id: 2,
     title: "Хвърляне под ъгъл спрямо хоризонта",
     subject: "phys",
     grade: 9,
+    authorId: 3,
     status: "solved",
     solutions: 3,
     comments: 3,
@@ -36,6 +41,7 @@ export const tasks = [
     title: "Изгаряне на метан",
     subject: "chem",
     grade: 8,
+    authorId: 4,
     status: "progress",
     solutions: 1,
     comments: 1,
@@ -47,6 +53,7 @@ export const tasks = [
     title: "Питагорова теорема",
     subject: "math",
     grade: 7,
+    authorId: 5,
     status: "solved",
     solutions: 2,
     comments: 5,
@@ -58,34 +65,35 @@ export const tasks = [
     title: "Цикъл за четни числа",
     subject: "it",
     grade: 10,
+    authorId: 1,
     status: "open",
     solutions: 0,
     comments: 0,
     time: "вчера",
-    text: ["for i in range(10):", "  print(?)"],
+    text: ["for i in range(10):", "\u00a0\u00a0print(?)"],
   },
   {
     id: 6,
     title: "Логаритмично уравнение",
     subject: "math",
     grade: 11,
+    authorId: 3,
     status: "progress",
     solutions: 2,
     comments: 2,
     time: "преди 2 дни",
     text: ["log₂(x + 1) = 3", "x = ?"],
   },
-];
-
-export const myTasks = [
   {
     id: 7,
     title: "Основно тригонометрично тъждество",
     subject: "math",
     grade: 10,
+    authorId: 2,
     status: "solved",
     solutions: 2,
     comments: 4,
+    time: "преди 3 дни",
     text: ["sin²x + cos²x = ?"],
   },
   {
@@ -93,29 +101,19 @@ export const myTasks = [
     title: "Втори закон на Нютон",
     subject: "phys",
     grade: 10,
+    authorId: 2,
     status: "open",
     solutions: 0,
     comments: 0,
+    time: "преди 4 дни",
     text: ["F = m·a, m = 2 kg", "a = ?"],
   },
 ];
 
-export const taskDetails = {
-  title: "Квадратно уравнение с цели корени",
-  subject: "math",
-  grade: 8,
-  author: { name: "Иван Г.", initials: "ИГ" },
-  time: "преди 5 мин",
-  status: "progress",
-  solutions: 2,
-  tags: ["Уравнения"],
-  text: ["Задача 4.", "x² − 5x + 6 = 0", "Намерете корените и проверете."],
-  note: "Не разбирам как се ползва формулата с дискриминантата, може ли някой да обясни стъпка по стъпка?",
-};
-
 export const solutions = [
   {
     id: 1,
+    taskId: 1,
     author: { name: "Елена К.", initials: "ЕК", points: "1 240", pink: true },
     time: "преди 2 мин",
     votes: 14,
@@ -127,6 +125,7 @@ export const solutions = [
   },
   {
     id: 2,
+    taskId: 1,
     author: { name: "Димитър С.", initials: "ДС", points: "320" },
     time: "преди 1 мин",
     votes: 3,
@@ -134,12 +133,6 @@ export const solutions = [
     text: ["Разлагаме: (x − 2)(x − 3) = 0, значи x = 2 или x = 3."],
     comments: 0,
   },
-];
-
-export const similarTasks = [
-  { id: 11, title: "x² + 2x − 8 = 0", grade: 8 },
-  { id: 12, title: "Формули на Виет", grade: 8 },
-  { id: 13, title: "Биквадратни уравнения", grade: 9 },
 ];
 
 export const stats = [

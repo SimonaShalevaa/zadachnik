@@ -1,11 +1,15 @@
+import { Link } from "react-router";
 import TaskCard from "../components/TaskCard";
 import BlogCard from "../components/BlogCard";
-import { tasks, stats, subjects, grades } from "../data/tasks";
+import { tasks, stats } from "../data/tasks";
 import { posts } from "../data/posts";
 
 function HomePage() {
+  const latestTasks = tasks.slice(0, 3);
+  const latestPosts = posts.slice(0, 3);
+
   return (
-    <section id="home" className="view">
+    <section>
       <div className="hero">
         <div>
           <h1>Заседна на задача?</h1>
@@ -13,9 +17,9 @@ function HomePage() {
             Снимай условието, качи го и някой от съучениците ти ще помогне. Или реши чужда задача и
             събери точки.
           </p>
-          <a href="#how" className="hero__link">
+          <Link to="/how-it-works" className="hero__link">
             Как работи? →
-          </a>
+          </Link>
         </div>
         <div className="hero__stats">
           {stats.map((stat) => (
@@ -27,47 +31,26 @@ function HomePage() {
         </div>
       </div>
 
-      <div className="filters">
-        <div className="chips">
-          <button className="chip chip--active">Всички</button>
-          {Object.values(subjects).map((name) => (
-            <button className="chip" key={name}>
-              {name}
-            </button>
-          ))}
-        </div>
-        <div className="filters__selects">
-          <select>
-            <option>Всички класове</option>
-            {grades.map((grade) => (
-              <option key={grade}>{grade} клас</option>
-            ))}
-          </select>
-          <select>
-            <option>Най-нови</option>
-            <option>Без решение</option>
-            <option>Най-популярни</option>
-          </select>
-        </div>
+      <div className="section-head">
+        <h2>Най-нови задачи</h2>
+        <Link to="/tasks" className="section-head__link">
+          Всички задачи →
+        </Link>
       </div>
-
       <div className="grid">
-        {tasks.map((task) => (
+        {latestTasks.map((task) => (
           <TaskCard key={task.id} task={task} />
         ))}
-      </div>
-      <div className="pagination">
-        <button className="btn btn--ghost">Зареди още</button>
       </div>
 
       <div className="section-head">
         <h2>От блога</h2>
-        <a href="#blog" className="section-head__link">
+        <Link to="/blog" className="section-head__link">
           Всички статии →
-        </a>
+        </Link>
       </div>
       <div className="blog-grid">
-        {posts.slice(0, 3).map((post) => (
+        {latestPosts.map((post) => (
           <BlogCard key={post.id} post={post} />
         ))}
       </div>

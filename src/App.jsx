@@ -1,7 +1,7 @@
-import { useEffect } from "react";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import { Routes, Route } from "react-router";
+import Layout from "./components/Layout";
 import HomePage from "./pages/HomePage";
+import CatalogPage from "./pages/CatalogPage";
 import TaskPage from "./pages/TaskPage";
 import UploadPage from "./pages/UploadPage";
 import LeaderboardPage from "./pages/LeaderboardPage";
@@ -14,39 +14,23 @@ import RegisterPage from "./pages/RegisterPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
-  useEffect(() => {
-    function checkHash() {
-      document.getElementById("nav-toggle").checked = false;
-
-      const id = window.location.hash.slice(1);
-      if (id && !document.getElementById(id)) {
-        window.location.hash = "not-found";
-      }
-    }
-
-    checkHash();
-    window.addEventListener("hashchange", checkHash);
-    return () => window.removeEventListener("hashchange", checkHash);
-  }, []);
-
   return (
-    <div>
-      <Header />
-      <main className="container main">
-        <HomePage />
-        <TaskPage />
-        <UploadPage />
-        <LeaderboardPage />
-        <ProfilePage />
-        <BlogPage />
-        <ArticlePage />
-        <HowItWorksPage />
-        <LoginPage />
-        <RegisterPage />
-        <NotFoundPage />
-      </main>
-      <Footer />
-    </div>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<HomePage />} />
+        <Route path="tasks" element={<CatalogPage />} />
+        <Route path="tasks/:taskId" element={<TaskPage />} />
+        <Route path="upload" element={<UploadPage />} />
+        <Route path="leaderboard" element={<LeaderboardPage />} />
+        <Route path="users/:userId" element={<ProfilePage />} />
+        <Route path="blog" element={<BlogPage />} />
+        <Route path="blog/:postId" element={<ArticlePage />} />
+        <Route path="how-it-works" element={<HowItWorksPage />} />
+        <Route path="login" element={<LoginPage />} />
+        <Route path="register" element={<RegisterPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
+    </Routes>
   );
 }
 

@@ -6,7 +6,7 @@ export const notifications = [
     who: "Елена К.",
     text: "реши твоята задача „Основно тригонометрично тъждество“",
     time: "преди 5 мин",
-    href: "#task",
+    href: "/tasks/7",
     unread: true,
   },
   {
@@ -16,7 +16,7 @@ export const notifications = [
     who: "",
     text: "Решението ти беше избрано за най-добро · +25 т.",
     time: "преди 1 ч",
-    href: "#task",
+    href: "/tasks/7",
     unread: true,
   },
   {
@@ -26,7 +26,7 @@ export const notifications = [
     who: "Димитър С.",
     text: "коментира решението ти: „Супер обяснено, благодаря!“",
     time: "преди 3 ч",
-    href: "#task",
+    href: "/tasks/7",
     unread: true,
   },
   {
@@ -36,7 +36,7 @@ export const notifications = [
     who: "",
     text: "Получи значка „7 дни поред“",
     time: "вчера",
-    href: "#profile",
+    href: "/users/2",
     unread: false,
   },
   {
@@ -46,7 +46,7 @@ export const notifications = [
     who: "",
     text: "Нова статия: „10 грешки, които струват точки на НВО“",
     time: "преди 2 дни",
-    href: "#article",
+    href: "/blog/2",
     unread: false,
   },
 ];

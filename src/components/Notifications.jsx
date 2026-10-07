@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router";
 import { notifications as initialNotifications } from "../data/notifications";
 
 function Notifications() {
@@ -48,8 +49,8 @@ function Notifications() {
           <ul className="notif__list">
             {notifications.map((n) => (
               <li key={n.id}>
-                <a
-                  href={n.href}
+                <Link
+                  to={n.href}
                   className={n.unread ? "notif__item notif__item--unread" : "notif__item"}
                   onClick={() => openNotification(n.id)}
                 >
@@ -59,7 +60,7 @@ function Notifications() {
                     {n.text}
                     <small>{n.time}</small>
                   </span>
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

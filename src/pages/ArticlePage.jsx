@@ -1,16 +1,55 @@
+import { Link, useParams } from "react-router";
 import Paper from "../components/Paper";
+import NotFoundPage from "./NotFoundPage";
+import { posts } from "../data/posts";
 
 function ArticlePage() {
+  const { postId } = useParams();
+  const post = posts.find((p) => p.id === Number(postId));
+
   function scrollTo(e, id) {
     e.preventDefault();
     document.getElementById(id).scrollIntoView({ behavior: "smooth" });
   }
 
+  if (!post) {
+    return <NotFoundPage />;
+  }
+
+  if (post.id !== 1) {
+    return (
+      <section>
+        <Link to="/blog" className="back">
+          ← Към блога
+        </Link>
+        <article className="card article">
+          <div className={"article__cover blog-card__cover--" + post.cover}>
+            <span>{post.symbol}</span>
+          </div>
+          <div className="article__content">
+            <span className="blog-card__cat">{post.category}</span>
+            <h1>{post.title}</h1>
+            <div className="article__meta">
+              <div className="author">
+                <div>
+                  <strong>{post.author}</strong>
+                  <small>{post.readTime} мин четене</small>
+                </div>
+              </div>
+            </div>
+            <p className="article__lead">{post.excerpt}</p>
+            <p>Пълният текст на статията ще бъде добавен скоро.</p>
+          </div>
+        </article>
+      </section>
+    );
+  }
+
   return (
-    <section id="article" className="view">
-      <a href="#blog" className="back">
+    <section>
+      <Link to="/blog" className="back">
         ← Към блога
-      </a>
+      </Link>
       <div className="article-layout">
         <article className="card article">
           <div className="article__cover blog-card__cover--math">
@@ -78,11 +117,11 @@ function ArticlePage() {
             <p>Опитай тези задачи от Задачник и провери решенията на другите:</p>
             <ul className="side-list article__practice">
               <li>
-                <a href="#task">x² + 2x − 8 = 0</a>
+                <Link to="/tasks/1">x² + 2x − 8 = 0</Link>
                 <span className="tag">8 кл.</span>
               </li>
               <li>
-                <a href="#task">Формули на Виет</a>
+                <Link to="/tasks/1">Формули на Виет</Link>
                 <span className="tag">8 кл.</span>
               </li>
             </ul>

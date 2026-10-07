@@ -1,12 +1,14 @@
+import { Link } from "react-router";
+
 function Footer() {
   return (
     <footer className="footer">
       <div className="container footer__inner">
         <span>© 2026 Задачник · zadachnik.bg</span>
         <nav>
-          <a href="#blog">Блог</a>
-          <a href="#how">Как работи</a>
-          <a href="#login">Вход</a>
+          <Link to="/blog">Блог</Link>
+          <Link to="/how-it-works">Как работи</Link>
+          <Link to="/login">Вход</Link>
         </nav>
       </div>
     </footer>

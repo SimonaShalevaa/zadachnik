@@ -145,18 +145,8 @@ textarea {
   margin: 0 auto;
 }
 
-.view {
-  display: none;
+.main > section {
   animation: fade 0.25s ease;
-}
-.view:target {
-  display: block;
-}
-.main:not(:has(.view:target)) #home {
-  display: block;
-}
-.view {
-  scroll-margin-top: 200px;
 }
 @keyframes fade {
   from {
@@ -1706,6 +1696,21 @@ textarea {
 @media (max-width: 760px) {
   .auth { grid-template-columns: 1fr; }
   .auth__aside { display: none; }
+}
+
+.nav__link.active {
+  color: var(--text);
+  background: var(--surface-2);
+}
+.leaderboard__name {
+  font-weight: 700;
+}
+.leaderboard__name:hover,
+.author:hover strong {
+  color: var(--primary);
+}
+.profile__title {
+  margin-top: 28px;
 }
 
 .footer {

@@ -1,26 +1,37 @@
+import { useParams } from "react-router";
 import TaskCard from "../components/TaskCard";
-import { currentUser } from "../data/users";
-import { myTasks } from "../data/tasks";
+import NotFoundPage from "./NotFoundPage";
+import { users } from "../data/users";
+import { tasks } from "../data/tasks";
 
 function ProfilePage() {
-  const user = currentUser;
+  const { userId } = useParams();
+
+  const user = users.find((u) => u.id === Number(userId));
+  if (!user) {
+    return <NotFoundPage />;
+  }
+
+  const userTasks = tasks.filter((t) => t.authorId === user.id);
 
   return (
-    <section id="profile" className="view">
+    <section>
       <div className="card profile">
-        <span className="avatar avatar--lg">{user.initials}</span>
+        <span className={user.pink ? "avatar avatar--lg avatar--alt" : "avatar avatar--lg"}>{user.initials}</span>
         <div className="profile__info">
-          <h1>{user.name}</h1>
+          <h1>{user.fullName || user.name}</h1>
           <p className="muted">
-            {user.grade} клас · {user.school}
+            {user.grade} клас{user.school && " · " + user.school}
           </p>
-          <div className="badges">
-            {user.badges.map((badge) => (
-              <span className="badge" key={badge}>
-                {badge}
-              </span>
-            ))}
-          </div>
+          {user.badges && (
+            <div className="badges">
+              {user.badges.map((badge) => (
+                <span className="badge" key={badge}>
+                  {badge}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
         <div className="hero__stats">
           <div className="stat">
@@ -28,23 +39,16 @@ function ProfilePage() {
             <span>точки</span>
           </div>
           <div className="stat">
-            <strong>{user.solutions}</strong>
-            <span>решения</span>
-          </div>
-          <div className="stat">
-            <strong>{user.tasks}</strong>
+            <strong>{userTasks.length}</strong>
             <span>задачи</span>
           </div>
         </div>
       </div>
 
-      <div className="tabs">
-        <a className="tab tab--active">Моите задачи</a>
-        <a className="tab">Моите решения</a>
-        <a className="tab">Запазени</a>
-      </div>
+      <h2 className="section-title profile__title">Задачи</h2>
+      {userTasks.length === 0 && <p className="muted">Този потребител още не е качил задачи.</p>}
       <div className="grid">
-        {myTasks.map((task) => (
+        {userTasks.map((task) => (
           <TaskCard key={task.id} task={task} />
         ))}
       </div>

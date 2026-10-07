@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { useState } from "react";
 import { subjects, grades } from "../data/tasks";
 
@@ -6,7 +7,7 @@ function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <section id="register" className="view">
+    <section>
       <div className="card auth">
         <div className="auth__aside">
           <span className="logo__mark">∑</span>
@@ -20,12 +21,12 @@ function RegisterPage() {
 
         <form className="auth__form">
           <div className="auth__tabs">
-            <a href="#login" className="auth__tab">
+            <Link to="/login" className="auth__tab">
               Вход
-            </a>
-            <a href="#register" className="auth__tab auth__tab--active">
+            </Link>
+            <Link to="/register" className="auth__tab auth__tab--active">
               Регистрация
-            </a>
+            </Link>
           </div>
 
           <div className="role-switch">
@@ -106,9 +107,9 @@ function RegisterPage() {
           </button>
           <p className="auth__alt muted">
             Вече имаш профил?{" "}
-            <a href="#login" className="auth__link">
+            <Link to="/login" className="auth__link">
               Влез
-            </a>
+            </Link>
           </p>
         </form>
       </div>

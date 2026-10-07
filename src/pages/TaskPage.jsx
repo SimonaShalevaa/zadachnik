@@ -1,49 +1,67 @@
 import { useState } from "react";
+import { Link, useParams } from "react-router";
 import Paper from "../components/Paper";
 import Lightbox from "../components/Lightbox";
 import SolutionCard from "../components/SolutionCard";
 import SolutionForm from "../components/SolutionForm";
-import { taskDetails, solutions, similarTasks, subjects } from "../data/tasks";
+import NotFoundPage from "./NotFoundPage";
+import { tasks, solutions, subjects } from "../data/tasks";
+import { users } from "../data/users";
 
 function TaskPage() {
+  const { taskId } = useParams();
   const [showImage, setShowImage] = useState(false);
-  const task = taskDetails;
+
+  const task = tasks.find((t) => t.id === Number(taskId));
+  if (!task) {
+    return <NotFoundPage />;
+  }
+
+  const author = users.find((u) => u.id === task.authorId);
+  const taskSolutions = solutions.filter((s) => s.taskId === task.id);
+  const similarTasks = tasks.filter((t) => t.subject === task.subject && t.id !== task.id).slice(0, 3);
+  const image = task.fullText || task.text;
 
   return (
-    <section id="task" className="view">
-      <a href="#home" className="back">
+    <section>
+      <Link to="/tasks" className="back">
         ← Към всички задачи
-      </a>
+      </Link>
       <div className="task-layout">
         <div>
           <article className="card task-detail">
             <div className="task-detail__head">
-              <div className="author">
-                <span className="avatar avatar--sm">{task.author.initials}</span>
+              <Link to={"/users/" + author.id} className="author">
+                <span className={author.pink ? "avatar avatar--sm avatar--alt" : "avatar avatar--sm"}>
+                  {author.initials}
+                </span>
                 <div>
-                  <strong>{task.author.name}</strong>
+                  <strong>{author.name}</strong>
                   <small>
                     {task.grade} клас · {task.time}
                   </small>
                 </div>
-              </div>
-              <span className="status status--progress">{task.solutions} решения</span>
+              </Link>
+              <span className={"status status--" + task.status}>
+                {task.status === "solved" ? "Решена" : task.solutions + " решения"}
+              </span>
             </div>
             <h1>{task.title}</h1>
             <div className="tags">
               <span className={"tag tag--" + task.subject}>{subjects[task.subject]}</span>
               <span className="tag">{task.grade} клас</span>
-              {task.tags.map((tag) => (
-                <span className="tag" key={tag}>
-                  {tag}
-                </span>
-              ))}
+              {task.tags &&
+                task.tags.map((tag) => (
+                  <span className="tag" key={tag}>
+                    {tag}
+                  </span>
+                ))}
             </div>
             <div className="task-detail__img" onClick={() => setShowImage(true)}>
               <span className="task-detail__zoom">🔍 Увеличи</span>
-              <Paper lines={task.text} className="paper--lg" />
+              <Paper lines={image} className="paper--lg" />
             </div>
-            <p className="task-detail__note">{task.note}</p>
+            {task.note && <p className="task-detail__note">{task.note}</p>}
             <div className="task-detail__actions">
               <button className="btn btn--ghost">🔖 Запази</button>
               <button className="btn btn--ghost">↗ Сподели</button>
@@ -52,26 +70,29 @@ function TaskPage() {
           </article>
 
           <h2 className="section-title">
-            Решения <span>({solutions.length})</span>
+            Решения <span>({taskSolutions.length})</span>
           </h2>
-          {solutions.map((solution) => (
+          {taskSolutions.length === 0 && <p className="muted">Още няма решения. Бъди първият, който ще помогне!</p>}
+          {taskSolutions.map((solution) => (
             <SolutionCard key={solution.id} solution={solution} />
           ))}
           <SolutionForm />
         </div>
 
         <aside className="sidebar">
-          <div className="card side-box">
-            <h3>Подобни задачи</h3>
-            <ul className="side-list">
-              {similarTasks.map((item) => (
-                <li key={item.id}>
-                  <a href="#task">{item.title}</a>
-                  <span className="tag">{item.grade} кл.</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {similarTasks.length > 0 && (
+            <div className="card side-box">
+              <h3>Подобни задачи</h3>
+              <ul className="side-list">
+                {similarTasks.map((item) => (
+                  <li key={item.id}>
+                    <Link to={"/tasks/" + item.id}>{item.title}</Link>
+                    <span className="tag">{item.grade} кл.</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           <div className="card side-box">
             <h3>Правила</h3>
             <ul className="rules">
@@ -83,7 +104,7 @@ function TaskPage() {
         </aside>
       </div>
 
-      {showImage && <Lightbox title={task.title} lines={task.text} onClose={() => setShowImage(false)} />}
+      {showImage && <Lightbox title={task.title} lines={image} onClose={() => setShowImage(false)} />}
     </section>
   );
 }

@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import Paper from "./Paper";
 import { subjects } from "../data/tasks";
 
@@ -11,16 +12,16 @@ function TaskCard({ task }) {
 
   return (
     <article className="card task-card">
-      <a href="#task" className="task-card__img">
+      <Link to={"/tasks/" + task.id} className="task-card__img">
         <Paper lines={task.text} />
-      </a>
+      </Link>
       <div className="task-card__body">
         <div className="tags">
           <span className={"tag tag--" + task.subject}>{subjects[task.subject]}</span>
           <span className="tag">{task.grade} клас</span>
         </div>
         <h3>
-          <a href="#task">{task.title}</a>
+          <Link to={"/tasks/" + task.id}>{task.title}</Link>
         </h3>
         <div className="task-card__meta">
           <span className={"status status--" + task.status}>{statusText}</span>

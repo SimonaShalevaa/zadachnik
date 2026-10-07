@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import BlogCard from "../components/BlogCard";
 import { posts, categories } from "../data/posts";
 
@@ -6,21 +7,21 @@ function BlogPage() {
   const otherPosts = posts.slice(1);
 
   return (
-    <section id="blog" className="view">
+    <section>
       <div className="blog-head">
         <h1>Блог</h1>
         <p className="muted">Обяснения, трикове и съвети за учене – написани от ученици и учители.</p>
       </div>
 
       <article className="card blog-featured">
-        <a href="#article" className={"blog-featured__cover blog-card__cover--" + featured.cover}>
+        <Link to="/blog/1" className={"blog-featured__cover blog-card__cover--" + featured.cover}>
           <span>∑</span>
-        </a>
+        </Link>
         <div className="blog-featured__body">
           <span className="badge-featured">★ Избрана статия</span>
           <span className="blog-card__cat">{featured.category}</span>
           <h2>
-            <a href="#article">{featured.title}</a>
+            <Link to="/blog/1">{featured.title}</Link>
           </h2>
           <p className="muted">{featured.excerpt}</p>
           <div className="author">

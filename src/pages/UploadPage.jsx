@@ -1,8 +1,9 @@
+import { Link } from "react-router";
 import { subjects, grades } from "../data/tasks";
 
 function UploadPage() {
   return (
-    <section id="upload" className="view">
+    <section>
       <div className="narrow">
         <h1>Качи нова задача</h1>
         <p className="muted">Снимай условието ясно и на добра светлина.</p>
@@ -48,9 +49,9 @@ function UploadPage() {
             <input id="tags" type="text" placeholder="уравнения, дискриминанта" />
           </div>
           <div className="form-actions">
-            <a href="#home" className="btn btn--ghost">
+            <Link to="/" className="btn btn--ghost">
               Отказ
-            </a>
+            </Link>
             <button type="button" className="btn btn--primary">
               Публикувай
             </button>

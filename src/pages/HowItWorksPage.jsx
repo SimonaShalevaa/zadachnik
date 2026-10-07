@@ -1,8 +1,9 @@
+import { Link } from "react-router";
 import { steps, pointRules, badges, rules, faq } from "../data/howItWorks";
 
 function HowItWorksPage() {
   return (
-    <section id="how" className="view">
+    <section>
       <div className="page-head page-head--center">
         <span className="eyebrow">Как работи</span>
         <h1>Ученици помагат на ученици</h1>
@@ -73,12 +74,12 @@ function HowItWorksPage() {
           <p className="muted">Регистрацията отнема по-малко от минута.</p>
         </div>
         <div className="cta__actions">
-          <a href="#register" className="btn btn--primary">
+          <Link to="/register" className="btn btn--primary">
             Създай профил
-          </a>
-          <a href="#home" className="btn btn--ghost">
+          </Link>
+          <Link to="/" className="btn btn--ghost">
             Разгледай задачите
-          </a>
+          </Link>
         </div>
       </div>
     </section>

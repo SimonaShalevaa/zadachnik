@@ -1,37 +1,60 @@
+import { useState } from "react";
+import { Link, NavLink } from "react-router";
 import Notifications from "./Notifications";
-import { currentUser } from "../data/users";
+import { users, currentUserId } from "../data/users";
 
 function Header() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const user = users.find((u) => u.id === currentUserId);
+
+  function closeMenu() {
+    setMenuOpen(false);
+  }
+
   return (
     <header className="header">
       <div className="container header__inner">
-        <a href="#home" className="logo">
+        <Link to="/" className="logo" onClick={closeMenu}>
           <span className="logo__mark">∑</span>
           <span className="logo__text">Задачник</span>
-        </a>
+        </Link>
 
-        <input type="checkbox" id="nav-toggle" className="nav-toggle" />
+        <input
+          type="checkbox"
+          id="nav-toggle"
+          className="nav-toggle"
+          checked={menuOpen}
+          onChange={(e) => setMenuOpen(e.target.checked)}
+        />
         <label htmlFor="nav-toggle" className="nav-burger">
           <span />
         </label>
 
         <nav className="nav">
-          <a href="#home" className="nav__link">Задачи</a>
-          <a href="#leaderboard" className="nav__link">Класация</a>
-          <a href="#blog" className="nav__link">Блог</a>
-          <a href="#profile" className="nav__link">Моят профил</a>
+          <NavLink to="/tasks" className="nav__link" onClick={closeMenu}>
+            Задачи
+          </NavLink>
+          <NavLink to="/leaderboard" className="nav__link" onClick={closeMenu}>
+            Класация
+          </NavLink>
+          <NavLink to="/blog" className="nav__link" onClick={closeMenu}>
+            Блог
+          </NavLink>
+          <NavLink to={"/users/" + user.id} className="nav__link" onClick={closeMenu}>
+            Моят профил
+          </NavLink>
           <div className="nav__search">
             <input type="search" placeholder="Търси задача…" />
           </div>
-          <a href="#upload" className="btn btn--primary">
+          <Link to="/upload" className="btn btn--primary" onClick={closeMenu}>
             + Качи задача
-          </a>
+          </Link>
         </nav>
 
         <Notifications />
-        <a href="#profile" className="avatar header__avatar">
-          {currentUser.initials}
-        </a>
+        <Link to={"/users/" + user.id} className="avatar header__avatar">
+          {user.initials}
+        </Link>
       </div>
     </header>
   );

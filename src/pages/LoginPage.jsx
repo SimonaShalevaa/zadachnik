@@ -1,10 +1,11 @@
+import { Link } from "react-router";
 import { useState } from "react";
 
 function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <section id="login" className="view">
+    <section>
       <div className="card auth">
         <div className="auth__aside">
           <span className="logo__mark">∑</span>
@@ -18,12 +19,12 @@ function LoginPage() {
 
         <form className="auth__form">
           <div className="auth__tabs">
-            <a href="#login" className="auth__tab auth__tab--active">
+            <Link to="/login" className="auth__tab auth__tab--active">
               Вход
-            </a>
-            <a href="#register" className="auth__tab">
+            </Link>
+            <Link to="/register" className="auth__tab">
               Регистрация
-            </a>
+            </Link>
           </div>
           <div className="field">
             <label htmlFor="login-email">Имейл</label>
@@ -42,18 +43,18 @@ function LoginPage() {
             <label className="checkbox">
               <input type="checkbox" /> Запомни ме
             </label>
-            <a href="#login" className="auth__link">
+            <Link to="/login" className="auth__link">
               Забравена парола?
-            </a>
+            </Link>
           </div>
           <button type="button" className="btn btn--primary btn--block">
             Влез
           </button>
           <p className="auth__alt muted">
             Нямаш профил?{" "}
-            <a href="#register" className="auth__link">
+            <Link to="/register" className="auth__link">
               Регистрирай се
-            </a>
+            </Link>
           </p>
         </form>
       </div>
