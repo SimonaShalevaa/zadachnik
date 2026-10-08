@@ -1,8 +1,54 @@
-import { Link } from "react-router";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router";
+import { UserContext } from "../contexts/UserContext";
 
 function LoginPage() {
+  const { login } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  const [values, setValues] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({});
+  const [serverError, setServerError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+
+  function handleChange(e) {
+    setValues({ ...values, [e.target.name]: e.target.value });
+  }
+
+  function validate() {
+    const newErrors = {};
+    if (!values.email.trim()) {
+      newErrors.email = "Въведи имейл.";
+    } else if (!values.email.includes("@")) {
+      newErrors.email = "Имейлът не е валиден.";
+    }
+    if (!values.password) {
+      newErrors.password = "Въведи парола.";
+    }
+    return newErrors;
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setServerError("");
+
+    const newErrors = validate();
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      return;
+    }
+
+    setIsSending(true);
+    try {
+      await login(values.email.trim(), values.password);
+      navigate("/");
+    } catch (err) {
+      setServerError(err.message);
+    } finally {
+      setIsSending(false);
+    }
+  }
 
   return (
     <section>
@@ -17,7 +63,7 @@ function LoginPage() {
           </ul>
         </div>
 
-        <form className="auth__form">
+        <form className="auth__form" onSubmit={handleSubmit} noValidate>
           <div className="auth__tabs">
             <Link to="/login" className="auth__tab auth__tab--active">
               Вход
@@ -26,29 +72,41 @@ function LoginPage() {
               Регистрация
             </Link>
           </div>
+
+          {serverError && <div className="form-alert">{serverError}</div>}
+
           <div className="field">
             <label htmlFor="login-email">Имейл</label>
-            <input id="login-email" type="email" placeholder="ime@primer.bg" />
+            <input
+              id="login-email"
+              name="email"
+              type="email"
+              placeholder="ime@primer.bg"
+              value={values.email}
+              onChange={handleChange}
+            />
+            {errors.email && <small className="field-error">{errors.email}</small>}
           </div>
           <div className="field">
             <label htmlFor="login-password">Парола</label>
             <div className="pw-field">
-              <input id="login-password" type={showPassword ? "text" : "password"} placeholder="••••••••" />
+              <input
+                id="login-password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                value={values.password}
+                onChange={handleChange}
+              />
               <button type="button" className="pw-toggle" onClick={() => setShowPassword(!showPassword)}>
                 {showPassword ? "Скрий" : "Покажи"}
               </button>
             </div>
+            {errors.password && <small className="field-error">{errors.password}</small>}
           </div>
-          <div className="auth__row">
-            <label className="checkbox">
-              <input type="checkbox" /> Запомни ме
-            </label>
-            <Link to="/login" className="auth__link">
-              Забравена парола?
-            </Link>
-          </div>
-          <button type="button" className="btn btn--primary btn--block">
-            Влез
+
+          <button type="submit" className="btn btn--primary btn--block" disabled={isSending}>
+            {isSending ? "Влизане…" : "Влез"}
           </button>
           <p className="auth__alt muted">
             Нямаш профил?{" "}

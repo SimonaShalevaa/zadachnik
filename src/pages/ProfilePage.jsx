@@ -1,18 +1,26 @@
+import { useContext } from "react";
 import { useParams } from "react-router";
 import TaskCard from "../components/TaskCard";
 import NotFoundPage from "./NotFoundPage";
+import { UserContext } from "../contexts/UserContext";
 import { users } from "../data/users";
 import { tasks } from "../data/tasks";
 
 function ProfilePage() {
   const { userId } = useParams();
+  const { user: currentUser } = useContext(UserContext);
 
-  const user = users.find((u) => u.id === Number(userId));
+  let user = users.find((u) => String(u.id) === userId);
+  if (currentUser && currentUser.id === userId) {
+    user = currentUser;
+  }
+
   if (!user) {
     return <NotFoundPage />;
   }
 
   const userTasks = tasks.filter((t) => t.authorId === user.id);
+  const isMe = currentUser && currentUser.id === user.id;
 
   return (
     <section>
@@ -21,7 +29,8 @@ function ProfilePage() {
         <div className="profile__info">
           <h1>{user.fullName || user.name}</h1>
           <p className="muted">
-            {user.grade} клас{user.school && " · " + user.school}
+            {user.grade ? user.grade + " клас" : "Учител"}
+            {user.school && " · " + user.school}
           </p>
           {user.badges && (
             <div className="badges">
@@ -45,8 +54,10 @@ function ProfilePage() {
         </div>
       </div>
 
-      <h2 className="section-title profile__title">Задачи</h2>
-      {userTasks.length === 0 && <p className="muted">Този потребител още не е качил задачи.</p>}
+      <h2 className="section-title profile__title">{isMe ? "Моите задачи" : "Задачи"}</h2>
+      {userTasks.length === 0 && (
+        <p className="muted">{isMe ? "Още не си качила задачи." : "Този потребител още не е качил задачи."}</p>
+      )}
       <div className="grid">
         {userTasks.map((task) => (
           <TaskCard key={task.id} task={task} />

@@ -1,14 +1,21 @@
-import { useState } from "react";
-import { Link, NavLink } from "react-router";
+import { useContext, useState } from "react";
+import { Link, NavLink, useNavigate } from "react-router";
 import Notifications from "./Notifications";
-import { users, currentUserId } from "../data/users";
+import { UserContext } from "../contexts/UserContext";
 
 function Header() {
+  const { user, logout } = useContext(UserContext);
   const [menuOpen, setMenuOpen] = useState(false);
-  const user = users.find((u) => u.id === currentUserId);
+  const navigate = useNavigate();
 
   function closeMenu() {
     setMenuOpen(false);
+  }
+
+  async function handleLogout() {
+    closeMenu();
+    await logout();
+    navigate("/");
   }
 
   return (
@@ -40,21 +47,39 @@ function Header() {
           <NavLink to="/blog" className="nav__link" onClick={closeMenu}>
             Блог
           </NavLink>
-          <NavLink to={"/users/" + user.id} className="nav__link" onClick={closeMenu}>
-            Моят профил
-          </NavLink>
           <div className="nav__search">
             <input type="search" placeholder="Търси задача…" />
           </div>
-          <Link to="/upload" className="btn btn--primary" onClick={closeMenu}>
-            + Качи задача
-          </Link>
+
+          {user ? (
+            <>
+              <Link to="/upload" className="btn btn--primary" onClick={closeMenu}>
+                + Качи задача
+              </Link>
+              <button className="btn btn--ghost" onClick={handleLogout}>
+                Изход
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="btn btn--ghost" onClick={closeMenu}>
+                Вход
+              </Link>
+              <Link to="/register" className="btn btn--primary" onClick={closeMenu}>
+                Регистрация
+              </Link>
+            </>
+          )}
         </nav>
 
-        <Notifications />
-        <Link to={"/users/" + user.id} className="avatar header__avatar">
-          {user.initials}
-        </Link>
+        {user && (
+          <>
+            <Notifications />
+            <Link to={"/users/" + user.id} className="avatar header__avatar" title={user.fullName}>
+              {user.initials}
+            </Link>
+          </>
+        )}
       </div>
     </header>
   );

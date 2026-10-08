@@ -14,5 +14,3 @@ export const users = [
   { id: 4, name: "Димитър С.", initials: "ДС", grade: 9, points: "320" },
   { id: 5, name: "Иван Г.", initials: "ИГ", grade: 8, points: "140" },
 ];
-
-export const currentUserId = 2;
