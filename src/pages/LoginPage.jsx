@@ -1,10 +1,9 @@
 import { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import { UserContext } from "../contexts/UserContext";
 
 function LoginPage() {
   const { login } = useContext(UserContext);
-  const navigate = useNavigate();
 
   const [values, setValues] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
@@ -42,7 +41,6 @@ function LoginPage() {
     setIsSending(true);
     try {
       await login(values.email.trim(), values.password);
-      navigate("/");
     } catch (err) {
       setServerError(err.message);
     } finally {

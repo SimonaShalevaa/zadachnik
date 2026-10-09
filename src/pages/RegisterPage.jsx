@@ -1,11 +1,10 @@
 import { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import { UserContext } from "../contexts/UserContext";
 import { grades } from "../data/tasks";
 
 function RegisterPage() {
   const { register } = useContext(UserContext);
-  const navigate = useNavigate();
 
   const [values, setValues] = useState({
     fullName: "",
@@ -62,7 +61,6 @@ function RegisterPage() {
     setIsSending(true);
     try {
       await register({ ...values, fullName: values.fullName.trim(), email: values.email.trim() });
-      navigate("/");
     } catch (err) {
       setServerError(err.message);
     } finally {

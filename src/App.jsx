@@ -1,5 +1,7 @@
 import { Routes, Route } from "react-router";
 import Layout from "./components/Layout";
+import PrivateRoute from "./components/PrivateRoute";
+import GuestRoute from "./components/GuestRoute";
 import HomePage from "./pages/HomePage";
 import CatalogPage from "./pages/CatalogPage";
 import TaskPage from "./pages/TaskPage";
@@ -20,14 +22,21 @@ function App() {
         <Route index element={<HomePage />} />
         <Route path="tasks" element={<CatalogPage />} />
         <Route path="tasks/:taskId" element={<TaskPage />} />
-        <Route path="upload" element={<UploadPage />} />
         <Route path="leaderboard" element={<LeaderboardPage />} />
         <Route path="users/:userId" element={<ProfilePage />} />
         <Route path="blog" element={<BlogPage />} />
         <Route path="blog/:postId" element={<ArticlePage />} />
         <Route path="how-it-works" element={<HowItWorksPage />} />
-        <Route path="login" element={<LoginPage />} />
-        <Route path="register" element={<RegisterPage />} />
+
+        <Route element={<PrivateRoute />}>
+          <Route path="upload" element={<UploadPage />} />
+        </Route>
+
+        <Route element={<GuestRoute />}>
+          <Route path="login" element={<LoginPage />} />
+          <Route path="register" element={<RegisterPage />} />
+        </Route>
+
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
