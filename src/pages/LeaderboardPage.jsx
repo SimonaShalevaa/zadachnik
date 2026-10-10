@@ -1,31 +1,44 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { users } from "../data/users";
+import { getTopProfiles } from "../services/profileService";
+import { getInitials } from "../utils/helpers";
 
 function LeaderboardPage() {
+  const [profiles, setProfiles] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    getTopProfiles()
+      .then((data) => setProfiles(data))
+      .catch((err) => setError(err.message))
+      .finally(() => setIsLoading(false));
+  }, []);
+
   return (
     <section>
       <div className="narrow">
         <h1>Класация</h1>
-        <div className="chips">
-          <button className="chip chip--active">Тази седмица</button>
-          <button className="chip">Този месец</button>
-          <button className="chip">Всички времена</button>
-        </div>
-        <ol className="card leaderboard">
-          {users.map((user, index) => (
-            <li key={user.id}>
-              <span className={index < 3 ? "rank rank--" + (index + 1) : "rank"}>{index + 1}</span>
-              <span className={user.pink ? "avatar avatar--sm avatar--alt" : "avatar avatar--sm"}>
-                {user.initials}
-              </span>
-              <Link to={"/users/" + user.id} className="leaderboard__name">
-                {user.name}
-              </Link>
-              <small>{user.grade} клас</small>
-              <span className="points">{user.points} т.</span>
-            </li>
-          ))}
-        </ol>
+        <p className="muted">Най-активните помощници в Задачник.</p>
+
+        {isLoading && <p className="loading">Зареждане…</p>}
+        {error && <div className="form-alert">{error}</div>}
+
+        {!isLoading && !error && (
+          <ol className="card leaderboard">
+            {profiles.map((profile, index) => (
+              <li key={profile.id}>
+                <span className={index < 3 ? "rank rank--" + (index + 1) : "rank"}>{index + 1}</span>
+                <span className="avatar avatar--sm">{getInitials(profile.full_name)}</span>
+                <Link to={"/users/" + profile.id} className="leaderboard__name">
+                  {profile.full_name}
+                </Link>
+                <small>{profile.grade ? profile.grade + " клас" : "Учител"}</small>
+                <span className="points">{profile.points} т.</span>
+              </li>
+            ))}
+          </ol>
+        )}
       </div>
     </section>
   );

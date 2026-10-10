@@ -1,26 +1,48 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
-import Paper from "../components/Paper";
 import Lightbox from "../components/Lightbox";
-import SolutionCard from "../components/SolutionCard";
 import SolutionForm from "../components/SolutionForm";
 import NotFoundPage from "./NotFoundPage";
-import { tasks, solutions, subjects } from "../data/tasks";
-import { users } from "../data/users";
+import { UserContext } from "../contexts/UserContext";
+import { getTaskById, getSimilarTasks } from "../services/taskService";
+import { subjects } from "../data/tasks";
+import { getInitials, formatDate } from "../utils/helpers";
 
 function TaskPage() {
   const { taskId } = useParams();
+  const { user } = useContext(UserContext);
+
+  const [result, setResult] = useState({ id: null, task: null, error: "" });
+  const [similarTasks, setSimilarTasks] = useState([]);
   const [showImage, setShowImage] = useState(false);
 
-  const task = tasks.find((t) => t.id === Number(taskId));
+  useEffect(() => {
+    getTaskById(taskId)
+      .then((task) => {
+        setResult({ id: taskId, task: task, error: "" });
+        if (task) {
+          getSimilarTasks(task).then((data) => setSimilarTasks(data));
+        }
+      })
+      .catch((err) => setResult({ id: taskId, task: null, error: err.message }));
+  }, [taskId]);
+
+  const isLoading = result.id !== taskId;
+  const task = result.task;
+
+  if (isLoading) {
+    return <p className="loading">Зареждане…</p>;
+  }
+
+  if (result.error) {
+    return <div className="form-alert">{result.error}</div>;
+  }
+
   if (!task) {
     return <NotFoundPage />;
   }
 
-  const author = users.find((u) => u.id === task.authorId);
-  const taskSolutions = solutions.filter((s) => s.taskId === task.id);
-  const similarTasks = tasks.filter((t) => t.subject === task.subject && t.id !== task.id).slice(0, 3);
-  const image = task.fullText || task.text;
+  const authorName = task.author ? task.author.full_name : "Неизвестен";
 
   return (
     <section>
@@ -31,52 +53,44 @@ function TaskPage() {
         <div>
           <article className="card task-detail">
             <div className="task-detail__head">
-              <Link to={"/users/" + author.id} className="author">
-                <span className={author.pink ? "avatar avatar--sm avatar--alt" : "avatar avatar--sm"}>
-                  {author.initials}
-                </span>
+              <Link to={"/users/" + task.author_id} className="author">
+                <span className="avatar avatar--sm">{getInitials(authorName)}</span>
                 <div>
-                  <strong>{author.name}</strong>
-                  <small>
-                    {task.grade} клас · {task.time}
-                  </small>
+                  <strong>{authorName}</strong>
+                  <small>{formatDate(task.created_at)}</small>
                 </div>
               </Link>
-              <span className={"status status--" + task.status}>
-                {task.status === "solved" ? "Решена" : task.solutions + " решения"}
-              </span>
             </div>
             <h1>{task.title}</h1>
             <div className="tags">
               <span className={"tag tag--" + task.subject}>{subjects[task.subject]}</span>
               <span className="tag">{task.grade} клас</span>
               {task.tags &&
-                task.tags.map((tag) => (
+                task.tags.split(",").map((tag) => (
                   <span className="tag" key={tag}>
-                    {tag}
+                    {tag.trim()}
                   </span>
                 ))}
             </div>
             <div className="task-detail__img" onClick={() => setShowImage(true)}>
               <span className="task-detail__zoom">🔍 Увеличи</span>
-              <Paper lines={image} className="paper--lg" />
+              <img src={task.image_url} alt={task.title} className="task-detail__photo" />
             </div>
             {task.note && <p className="task-detail__note">{task.note}</p>}
-            <div className="task-detail__actions">
-              <button className="btn btn--ghost">🔖 Запази</button>
-              <button className="btn btn--ghost">↗ Сподели</button>
-              <button className="btn btn--ghost btn--danger">⚑ Докладвай</button>
-            </div>
           </article>
 
-          <h2 className="section-title">
-            Решения <span>({taskSolutions.length})</span>
-          </h2>
-          {taskSolutions.length === 0 && <p className="muted">Още няма решения. Бъди първият, който ще помогне!</p>}
-          {taskSolutions.map((solution) => (
-            <SolutionCard key={solution.id} solution={solution} />
-          ))}
-          <SolutionForm />
+          <h2 className="section-title">Решения</h2>
+          <p className="muted">Още няма решения. Бъди първият, който ще помогне!</p>
+          {user ? (
+            <SolutionForm />
+          ) : (
+            <p className="muted">
+              <Link to="/login" className="auth__link">
+                Влез
+              </Link>
+              , за да напишеш решение.
+            </p>
+          )}
         </div>
 
         <aside className="sidebar">
@@ -104,7 +118,9 @@ function TaskPage() {
         </aside>
       </div>
 
-      {showImage && <Lightbox title={task.title} lines={image} onClose={() => setShowImage(false)} />}
+      {showImage && (
+        <Lightbox title={task.title} imageUrl={task.image_url} onClose={() => setShowImage(false)} />
+      )}
     </section>
   );
 }

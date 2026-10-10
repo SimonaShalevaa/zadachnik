@@ -1,7 +1,6 @@
 import { useEffect } from "react";
-import Paper from "./Paper";
 
-function Lightbox({ title, lines, onClose }) {
+function Lightbox({ title, imageUrl, onClose }) {
   useEffect(() => {
     function handleKey(e) {
       if (e.key === "Escape") {
@@ -27,7 +26,7 @@ function Lightbox({ title, lines, onClose }) {
         </div>
       </div>
       <div className="lightbox__stage" onClick={(e) => e.stopPropagation()}>
-        <Paper lines={lines} className="paper--lg lightbox__img" />
+        <img src={imageUrl} alt={title} className="lightbox__photo" />
       </div>
       <p className="lightbox__hint">Натисни Esc или кликни извън снимката, за да затвориш</p>
     </div>

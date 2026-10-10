@@ -1,12 +1,22 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import TaskCard from "../components/TaskCard";
 import BlogCard from "../components/BlogCard";
-import { tasks, stats } from "../data/tasks";
+import { getLatestTasks } from "../services/taskService";
+import { stats } from "../data/tasks";
 import { posts } from "../data/posts";
 
 function HomePage() {
-  const latestTasks = tasks.slice(0, 3);
-  const latestPosts = posts.slice(0, 3);
+  const [tasks, setTasks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    getLatestTasks(3)
+      .then((data) => setTasks(data))
+      .catch((err) => setError(err.message))
+      .finally(() => setIsLoading(false));
+  }, []);
 
   return (
     <section>
@@ -37,8 +47,13 @@ function HomePage() {
           Всички задачи →
         </Link>
       </div>
+      {isLoading && <p className="loading">Зареждане…</p>}
+      {error && <div className="form-alert">{error}</div>}
+      {!isLoading && !error && tasks.length === 0 && (
+        <p className="muted">Още няма качени задачи. Бъди първият!</p>
+      )}
       <div className="grid">
-        {latestTasks.map((task) => (
+        {tasks.map((task) => (
           <TaskCard key={task.id} task={task} />
         ))}
       </div>
@@ -50,7 +65,7 @@ function HomePage() {
         </Link>
       </div>
       <div className="blog-grid">
-        {latestPosts.map((post) => (
+        {posts.slice(0, 3).map((post) => (
           <BlogCard key={post.id} post={post} />
         ))}
       </div>

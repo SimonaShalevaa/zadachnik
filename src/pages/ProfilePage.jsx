@@ -1,65 +1,68 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import TaskCard from "../components/TaskCard";
 import NotFoundPage from "./NotFoundPage";
 import { UserContext } from "../contexts/UserContext";
-import { users } from "../data/users";
-import { tasks } from "../data/tasks";
+import { getProfile } from "../services/profileService";
+import { getTasksByAuthor } from "../services/taskService";
+import { getInitials } from "../utils/helpers";
 
 function ProfilePage() {
   const { userId } = useParams();
   const { user: currentUser } = useContext(UserContext);
 
-  let user = users.find((u) => String(u.id) === userId);
-  if (currentUser && currentUser.id === userId) {
-    user = currentUser;
+  const [result, setResult] = useState({ id: null, profile: null, tasks: [], error: "" });
+
+  useEffect(() => {
+    Promise.all([getProfile(userId), getTasksByAuthor(userId)])
+      .then(([profile, tasks]) => setResult({ id: userId, profile: profile, tasks: tasks, error: "" }))
+      .catch((err) => setResult({ id: userId, profile: null, tasks: [], error: err.message }));
+  }, [userId]);
+
+  if (result.id !== userId) {
+    return <p className="loading">Зареждане…</p>;
   }
 
-  if (!user) {
+  if (result.error) {
+    return <div className="form-alert">{result.error}</div>;
+  }
+
+  const profile = result.profile;
+  if (!profile) {
     return <NotFoundPage />;
   }
 
-  const userTasks = tasks.filter((t) => t.authorId === user.id);
-  const isMe = currentUser && currentUser.id === user.id;
+  const isMe = currentUser && currentUser.id === profile.id;
 
   return (
     <section>
       <div className="card profile">
-        <span className={user.pink ? "avatar avatar--lg avatar--alt" : "avatar avatar--lg"}>{user.initials}</span>
+        <span className="avatar avatar--lg">{getInitials(profile.full_name)}</span>
         <div className="profile__info">
-          <h1>{user.fullName || user.name}</h1>
+          <h1>{profile.full_name}</h1>
           <p className="muted">
-            {user.grade ? user.grade + " клас" : "Учител"}
-            {user.school && " · " + user.school}
+            {profile.role === "teacher" ? "Учител" : profile.grade + " клас"}
+            {profile.school && " · " + profile.school}
           </p>
-          {user.badges && (
-            <div className="badges">
-              {user.badges.map((badge) => (
-                <span className="badge" key={badge}>
-                  {badge}
-                </span>
-              ))}
-            </div>
-          )}
         </div>
         <div className="hero__stats">
           <div className="stat">
-            <strong>{user.points}</strong>
+            <strong>{profile.points}</strong>
             <span>точки</span>
           </div>
           <div className="stat">
-            <strong>{userTasks.length}</strong>
+            <strong>{result.tasks.length}</strong>
             <span>задачи</span>
           </div>
         </div>
       </div>
 
       <h2 className="section-title profile__title">{isMe ? "Моите задачи" : "Задачи"}</h2>
-      {userTasks.length === 0 && (
-        <p className="muted">{isMe ? "Още не си качила задачи." : "Този потребител още не е качил задачи."}</p>
+      {result.tasks.length === 0 && (
+        <p className="muted">{isMe ? "Още нямаш качени задачи." : "Този потребител още не е качил задачи."}</p>
       )}
       <div className="grid">
-        {userTasks.map((task) => (
+        {result.tasks.map((task) => (
           <TaskCard key={task.id} task={task} />
         ))}
       </div>
