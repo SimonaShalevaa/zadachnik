@@ -1760,6 +1760,24 @@ textarea {
   object-fit: contain;
 }
 
+.btn--danger-solid {
+  background: var(--danger);
+  color: #fff;
+}
+.btn--danger-solid:hover {
+  filter: brightness(1.1);
+}
+.confirm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+  font-size: 0.9rem;
+}
+
 .footer {
   border-top: 1px solid var(--border);
   background: var(--surface);

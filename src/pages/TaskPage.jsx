@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import { Link, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import Lightbox from "../components/Lightbox";
 import SolutionForm from "../components/SolutionForm";
 import NotFoundPage from "./NotFoundPage";
 import { UserContext } from "../contexts/UserContext";
-import { getTaskById, getSimilarTasks } from "../services/taskService";
+import { getTaskById, getSimilarTasks, deleteTask } from "../services/taskService";
 import { subjects } from "../data/tasks";
 import { getInitials, formatDate, cleanTags } from "../utils/helpers";
 
@@ -15,6 +15,10 @@ function TaskPage() {
   const [result, setResult] = useState({ id: null, task: null, error: "" });
   const [similarTasks, setSimilarTasks] = useState([]);
   const [showImage, setShowImage] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     getTaskById(taskId)
@@ -44,6 +48,19 @@ function TaskPage() {
 
   const authorName = task.author ? task.author.full_name : "Неизвестен";
   const tags = cleanTags(task.tags || "");
+  const isOwner = user && user.id === task.author_id;
+
+  async function handleDelete() {
+    setIsDeleting(true);
+    setDeleteError("");
+    try {
+      await deleteTask(task);
+      navigate("/tasks");
+    } catch (err) {
+      setDeleteError(err.message);
+      setIsDeleting(false);
+    }
+  }
 
   return (
     <section>
@@ -80,6 +97,32 @@ function TaskPage() {
               <img src={task.image_url} alt={task.title} className="task-detail__photo" />
             </div>
             {task.note && <p className="task-detail__note">{task.note}</p>}
+
+            {isOwner && (
+              <div className="task-detail__actions">
+                {!confirmDelete ? (
+                  <>
+                    <Link to={"/tasks/" + task.id + "/edit"} className="btn btn--ghost">
+                      ✎ Редактирай
+                    </Link>
+                    <button className="btn btn--ghost btn--danger" onClick={() => setConfirmDelete(true)}>
+                      🗑 Изтрий
+                    </button>
+                  </>
+                ) : (
+                  <div className="confirm">
+                    <span>Сигурна ли си, че искаш да изтриеш задачата?</span>
+                    <button className="btn btn--danger-solid" onClick={handleDelete} disabled={isDeleting}>
+                      {isDeleting ? "Изтриване…" : "Да, изтрий"}
+                    </button>
+                    <button className="btn btn--ghost" onClick={() => setConfirmDelete(false)} disabled={isDeleting}>
+                      Отказ
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+            {deleteError && <div className="form-alert">{deleteError}</div>}
           </article>
 
           <h2 className="section-title">Решения</h2>

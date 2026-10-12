@@ -98,3 +98,54 @@ export async function createTask(task, file, userId) {
   }
   return data;
 }
+
+function getImagePath(imageUrl) {
+  return imageUrl.split("/task-images/")[1];
+}
+
+async function deleteImage(imageUrl) {
+  if (!imageUrl) {
+    return;
+  }
+  await supabase.storage.from("task-images").remove([getImagePath(imageUrl)]);
+}
+
+export async function updateTask(task, values, file, userId) {
+  let imageUrl = task.image_url;
+  if (file) {
+    imageUrl = await uploadImage(file, userId);
+  }
+
+  const { data, error } = await supabase
+    .from("tasks")
+    .update({
+      title: values.title,
+      subject: values.subject,
+      grade: Number(values.grade),
+      note: values.note,
+      tags: values.tags,
+      image_url: imageUrl,
+    })
+    .eq("id", task.id)
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error("Промените не можаха да се запишат.");
+  }
+
+  if (file) {
+    await deleteImage(task.image_url);
+  }
+  return data;
+}
+
+export async function deleteTask(task) {
+  const { error } = await supabase.from("tasks").delete().eq("id", task.id);
+
+  if (error) {
+    throw new Error("Задачата не можа да се изтрие.");
+  }
+
+  await deleteImage(task.image_url);
+}

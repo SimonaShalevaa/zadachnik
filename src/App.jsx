@@ -6,6 +6,7 @@ import HomePage from "./pages/HomePage";
 import CatalogPage from "./pages/CatalogPage";
 import TaskPage from "./pages/TaskPage";
 import UploadPage from "./pages/UploadPage";
+import EditTaskPage from "./pages/EditTaskPage";
 import LeaderboardPage from "./pages/LeaderboardPage";
 import ProfilePage from "./pages/ProfilePage";
 import BlogPage from "./pages/BlogPage";
@@ -30,6 +31,7 @@ function App() {
 
         <Route element={<PrivateRoute />}>
           <Route path="upload" element={<UploadPage />} />
+          <Route path="tasks/:taskId/edit" element={<EditTaskPage />} />
         </Route>
 
         <Route element={<GuestRoute />}>
