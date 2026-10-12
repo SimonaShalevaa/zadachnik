@@ -14,3 +14,16 @@ export function formatDate(dateString) {
     year: "numeric",
   });
 }
+
+export function cleanTags(text) {
+  const result = [];
+
+  text.split(",").forEach((tag) => {
+    const clean = tag.trim().toLowerCase();
+    if (clean && !result.includes(clean)) {
+      result.push(clean);
+    }
+  });
+
+  return result.slice(0, 5).join(", ");
+}

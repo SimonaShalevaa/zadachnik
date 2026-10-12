@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router";
 import { UserContext } from "../contexts/UserContext";
 import { createTask } from "../services/taskService";
 import { subjects, grades } from "../data/tasks";
+import { cleanTags } from "../utils/helpers";
 
 const MAX_SIZE_MB = 5;
 
@@ -71,7 +72,11 @@ function UploadPage() {
 
     setIsSending(true);
     try {
-      const task = await createTask({ ...values, title: values.title.trim() }, file, user.id);
+      const task = await createTask(
+        { ...values, title: values.title.trim(), note: values.note.trim(), tags: cleanTags(values.tags) },
+        file,
+        user.id
+      );
       navigate("/tasks/" + task.id);
     } catch (err) {
       setServerError(err.message);
@@ -155,7 +160,7 @@ function UploadPage() {
 
           <div className="field">
             <label htmlFor="tags">
-              Етикети <small>(разделени със запетая)</small>
+              Етикети <small>(до 5, разделени със запетая)</small>
             </label>
             <input
               id="tags"

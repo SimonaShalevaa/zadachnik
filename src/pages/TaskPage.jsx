@@ -6,7 +6,7 @@ import NotFoundPage from "./NotFoundPage";
 import { UserContext } from "../contexts/UserContext";
 import { getTaskById, getSimilarTasks } from "../services/taskService";
 import { subjects } from "../data/tasks";
-import { getInitials, formatDate } from "../utils/helpers";
+import { getInitials, formatDate, cleanTags } from "../utils/helpers";
 
 function TaskPage() {
   const { taskId } = useParams();
@@ -43,6 +43,7 @@ function TaskPage() {
   }
 
   const authorName = task.author ? task.author.full_name : "Неизвестен";
+  const tags = cleanTags(task.tags || "");
 
   return (
     <section>
@@ -65,12 +66,14 @@ function TaskPage() {
             <div className="tags">
               <span className={"tag tag--" + task.subject}>{subjects[task.subject]}</span>
               <span className="tag">{task.grade} клас</span>
-              {task.tags &&
-                task.tags.split(",").map((tag) => (
-                  <span className="tag" key={tag}>
-                    {tag.trim()}
-                  </span>
-                ))}
+              {tags &&
+                tags
+                  .split(", ")
+                  .map((tag) => (
+                    <span className="tag" key={tag}>
+                      {tag}
+                    </span>
+                  ))}
             </div>
             <div className="task-detail__img" onClick={() => setShowImage(true)}>
               <span className="task-detail__zoom">🔍 Увеличи</span>
