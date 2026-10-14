@@ -63,7 +63,7 @@ export async function getTasksByAuthor(authorId) {
   return data;
 }
 
-async function uploadImage(file, userId) {
+export async function uploadImage(file, userId) {
   const extension = file.name.split(".").pop();
   const path = userId + "/" + Date.now() + "." + extension;
 
@@ -103,7 +103,7 @@ function getImagePath(imageUrl) {
   return imageUrl.split("/task-images/")[1];
 }
 
-async function deleteImage(imageUrl) {
+export async function deleteImage(imageUrl) {
   if (!imageUrl) {
     return;
   }

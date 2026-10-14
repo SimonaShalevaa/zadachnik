@@ -1,29 +1,42 @@
-import Paper from "./Paper";
+import { useState } from "react";
+import { Link } from "react-router";
+import { deleteSolution } from "../services/solutionService";
+import { getInitials, formatDate } from "../utils/helpers";
 
-function SolutionCard({ solution }) {
-  const { author } = solution;
+function SolutionCard({ solution, isOwner, onDeleted }) {
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [error, setError] = useState("");
+
+  const authorName = solution.author ? solution.author.full_name : "Неизвестен";
+  const points = solution.author ? solution.author.points : 0;
+
+  async function handleDelete() {
+    setIsDeleting(true);
+    setError("");
+    try {
+      await deleteSolution(solution);
+      onDeleted(solution.id);
+    } catch (err) {
+      setError(err.message);
+      setIsDeleting(false);
+    }
+  }
 
   return (
-    <article className={solution.best ? "card solution solution--best" : "card solution"}>
-      <div className="solution__votes">
-        <button className="vote">▲</button>
-        <strong>{solution.votes}</strong>
-        <button className="vote">▼</button>
-      </div>
+    <article className={solution.is_best ? "card solution solution--best" : "card solution"}>
       <div className="solution__body">
         <div className="solution__head">
-          <div className="author">
-            <span className={author.pink ? "avatar avatar--sm avatar--alt" : "avatar avatar--sm"}>
-              {author.initials}
-            </span>
+          <Link to={"/users/" + solution.author_id} className="author">
+            <span className="avatar avatar--sm">{getInitials(authorName)}</span>
             <div>
-              <strong>{author.name}</strong>
+              <strong>{authorName}</strong>
               <small>
-                ⭐ {author.points} т. · {solution.time}
+                ⭐ {points} т. · {formatDate(solution.created_at)}
               </small>
             </div>
-          </div>
-          {solution.best && <span className="badge-best">✓ Най-добро решение</span>}
+          </Link>
+          {solution.is_best && <span className="badge-best">✓ Най-добро решение</span>}
         </div>
 
         {solution.hint && (
@@ -35,16 +48,36 @@ function SolutionCard({ solution }) {
 
         <details className="spoiler">
           <summary>📝 Пълно решение</summary>
-          {solution.text.map((line, index) => (
+          {solution.text.split("\n").map((line, index) => (
             <p key={index}>{line}</p>
           ))}
-          {solution.paper && <Paper lines={[solution.paper]} className="paper--sm" />}
+          {solution.image_url && (
+            <a href={solution.image_url} target="_blank" rel="noreferrer">
+              <img src={solution.image_url} alt="Снимка на решението" className="solution__photo" />
+            </a>
+          )}
         </details>
 
-        <div className="solution__footer">
-          <button className="link-btn">💬 Коментари ({solution.comments})</button>
-          <button className="link-btn">{solution.best ? "🙏 Благодаря" : "✓ Маркирай като най-добро"}</button>
-        </div>
+        {isOwner && (
+          <div className="solution__footer">
+            {!confirmDelete ? (
+              <button className="btn btn--ghost btn--danger" onClick={() => setConfirmDelete(true)}>
+                🗑 Изтрий
+              </button>
+            ) : (
+              <div className="confirm">
+                <span>Да изтрия ли решението?</span>
+                <button className="btn btn--danger-solid" onClick={handleDelete} disabled={isDeleting}>
+                  {isDeleting ? "Изтриване…" : "Да, изтрий"}
+                </button>
+                <button className="btn btn--ghost" onClick={() => setConfirmDelete(false)} disabled={isDeleting}>
+                  Отказ
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+        {error && <div className="form-alert">{error}</div>}
       </div>
     </article>
   );

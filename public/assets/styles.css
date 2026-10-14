@@ -744,6 +744,7 @@ textarea:focus {
 }
 .solution__footer {
   display: flex;
+  justify-content: flex-end;
   gap: 18px;
   margin-top: 12px;
 }
@@ -1720,9 +1721,14 @@ textarea {
   background: color-mix(in srgb, var(--danger) 12%, transparent);
   font-size: 0.9rem;
 }
-.field-error {
+.field-error,
+.field .field-error {
   color: var(--danger);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.field .input-error {
+  border-color: var(--danger);
 }
 .btn:disabled {
   opacity: 0.7;
@@ -1776,6 +1782,22 @@ textarea {
   border-radius: var(--radius-sm);
   background: color-mix(in srgb, var(--danger) 12%, transparent);
   font-size: 0.9rem;
+}
+
+.solution__photo {
+  max-width: 100%;
+  max-height: 400px;
+  margin-top: 8px;
+  border-radius: var(--radius-sm);
+}
+.solution-form__preview {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.solution-form__preview img {
+  max-height: 120px;
+  border-radius: var(--radius-sm);
 }
 
 .footer {

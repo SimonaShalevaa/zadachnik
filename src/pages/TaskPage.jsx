@@ -2,9 +2,11 @@ import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import Lightbox from "../components/Lightbox";
 import SolutionForm from "../components/SolutionForm";
+import SolutionCard from "../components/SolutionCard";
 import NotFoundPage from "./NotFoundPage";
 import { UserContext } from "../contexts/UserContext";
 import { getTaskById, getSimilarTasks, deleteTask } from "../services/taskService";
+import { getSolutions } from "../services/solutionService";
 import { subjects } from "../data/tasks";
 import { getInitials, formatDate, cleanTags } from "../utils/helpers";
 
@@ -14,6 +16,7 @@ function TaskPage() {
 
   const [result, setResult] = useState({ id: null, task: null, error: "" });
   const [similarTasks, setSimilarTasks] = useState([]);
+  const [solutionsResult, setSolutionsResult] = useState({ id: null, list: [], error: "" });
   const [showImage, setShowImage] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -29,6 +32,12 @@ function TaskPage() {
         }
       })
       .catch((err) => setResult({ id: taskId, task: null, error: err.message }));
+  }, [taskId]);
+
+  useEffect(() => {
+    getSolutions(taskId)
+      .then((data) => setSolutionsResult({ id: taskId, list: data, error: "" }))
+      .catch((err) => setSolutionsResult({ id: taskId, list: [], error: err.message }));
   }, [taskId]);
 
   const isLoading = result.id !== taskId;
@@ -49,6 +58,20 @@ function TaskPage() {
   const authorName = task.author ? task.author.full_name : "Неизвестен";
   const tags = cleanTags(task.tags || "");
   const isOwner = user && user.id === task.author_id;
+
+  const solutionsLoading = solutionsResult.id !== taskId;
+  const solutions = solutionsLoading ? [] : solutionsResult.list;
+
+  function handleSolutionAdded(solution) {
+    setSolutionsResult({ ...solutionsResult, list: [...solutionsResult.list, solution] });
+  }
+
+  function handleSolutionDeleted(solutionId) {
+    setSolutionsResult({
+      ...solutionsResult,
+      list: solutionsResult.list.filter((item) => item.id !== solutionId),
+    });
+  }
 
   async function handleDelete() {
     setIsDeleting(true);
@@ -125,10 +148,25 @@ function TaskPage() {
             {deleteError && <div className="form-alert">{deleteError}</div>}
           </article>
 
-          <h2 className="section-title">Решения</h2>
-          <p className="muted">Още няма решения. Бъди първият, който ще помогне!</p>
+          <h2 className="section-title">
+            Решения <span>({solutions.length})</span>
+          </h2>
+          {solutionsLoading && <p className="muted">Зареждане на решенията…</p>}
+          {solutionsResult.error && <div className="form-alert">{solutionsResult.error}</div>}
+          {!solutionsLoading && !solutionsResult.error && solutions.length === 0 && (
+            <p className="muted">Още няма решения. Бъди първият, който ще помогне!</p>
+          )}
+          {solutions.map((solution) => (
+            <SolutionCard
+              key={solution.id}
+              solution={solution}
+              isOwner={user && user.id === solution.author_id}
+              onDeleted={handleSolutionDeleted}
+            />
+          ))}
+
           {user ? (
-            <SolutionForm />
+            <SolutionForm taskId={task.id} onAdded={handleSolutionAdded} />
           ) : (
             <p className="muted">
               <Link to="/login" className="auth__link">
