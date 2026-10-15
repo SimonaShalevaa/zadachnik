@@ -1,15 +1,47 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router";
-import { deleteSolution } from "../services/solutionService";
+import { UserContext } from "../contexts/UserContext";
+import { deleteSolution, likeSolution, unlikeSolution } from "../services/solutionService";
 import { getInitials, formatDate } from "../utils/helpers";
 
 function SolutionCard({ solution, isOwner, onDeleted }) {
+  const { user } = useContext(UserContext);
+
+  const [likes, setLikes] = useState(solution.likes || []);
+  const [isLiking, setIsLiking] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState("");
 
   const authorName = solution.author ? solution.author.full_name : "Неизвестен";
   const points = solution.author ? solution.author.points : 0;
+
+  const isLiked = user && likes.some((like) => like.user_id === user.id);
+  const canLike = user && !isOwner;
+
+  let likeTitle = "";
+  if (!user) {
+    likeTitle = "Влез, за да харесаш";
+  } else if (isOwner) {
+    likeTitle = "Не можеш да харесаш свое решение";
+  }
+
+  async function handleLike() {
+    setIsLiking(true);
+    setError("");
+    try {
+      if (isLiked) {
+        await unlikeSolution(solution.id, user.id);
+        setLikes(likes.filter((like) => like.user_id !== user.id));
+      } else {
+        await likeSolution(solution.id, user.id);
+        setLikes([...likes, { user_id: user.id }]);
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+    setIsLiking(false);
+  }
 
   async function handleDelete() {
     setIsDeleting(true);
@@ -58,9 +90,18 @@ function SolutionCard({ solution, isOwner, onDeleted }) {
           )}
         </details>
 
-        {isOwner && (
-          <div className="solution__footer">
-            {!confirmDelete ? (
+        <div className="solution__footer">
+          <button
+            className={isLiked ? "like-btn like-btn--active" : "like-btn"}
+            onClick={handleLike}
+            disabled={!canLike || isLiking}
+            title={likeTitle}
+          >
+            👍 Полезно <strong>{likes.length}</strong>
+          </button>
+
+          {isOwner &&
+            (!confirmDelete ? (
               <button className="btn btn--ghost btn--danger" onClick={() => setConfirmDelete(true)}>
                 🗑 Изтрий
               </button>
@@ -74,9 +115,8 @@ function SolutionCard({ solution, isOwner, onDeleted }) {
                   Отказ
                 </button>
               </div>
-            )}
-          </div>
-        )}
+            ))}
+        </div>
         {error && <div className="form-alert">{error}</div>}
       </div>
     </article>

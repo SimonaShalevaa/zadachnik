@@ -744,9 +744,36 @@ textarea:focus {
 }
 .solution__footer {
   display: flex;
-  justify-content: flex-end;
-  gap: 18px;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
   margin-top: 12px;
+}
+.like-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.like-btn:hover:not(:disabled) {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.like-btn--active {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+.like-btn:disabled {
+  cursor: default;
 }
 .badge-best {
   font-size: 0.78rem;
